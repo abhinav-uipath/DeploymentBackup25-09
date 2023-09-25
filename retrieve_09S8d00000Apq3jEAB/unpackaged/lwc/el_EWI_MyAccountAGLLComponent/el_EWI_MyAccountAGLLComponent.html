@@ -1,0 +1,337 @@
+<template>
+  <template if:true ={showDetails}> 
+  <div class="tab-content custom-tab-content" id="sf-tabContent">
+      <div class="tab-pane fade show active" id="sf-deposit" role="tabpanel" aria-labelledby="sf-deposit-tab">
+          <div class="deposit-agent">
+          <div class="container">
+              <div class="row">
+                  <div class="col-md-12">
+                       <a class="go-back" onclick={handleGoBack}><img src={ew_arrow_dropleft} alt="Back"> Go Back</a> 
+                    <!-- <a href="deposite_summary.html" class="go-back"><img src="../../assets/img/ew-arrow-dropleft.png" alt="Back Icon"> Go Back</a> -->
+                    <div class="errorMsgDiv2"> </div>
+                      <h3 class="mt-5">Contact details</h3>
+                      <div class="terms_box">
+                          <p>The information shown below is for communication purposes only. Should you wish to change the username/email</br>
+                            address used to access your account, please contact us on 0300 037 1000.</p>
+                      </div>
+                      
+                    <template if:true ={contactSuccessMessage}>
+                      <div id="contactSuccessMessage" class="alert alert-success alert-dismissible fade show">
+                      Contact update successfully.
+                      <button type="button" class="close" onclick={hideBootstrapErrors} name="contactSuccessMessage">&times;</button>
+                    </div>
+                    </template>
+                     <template if:true={emailRegexError}>
+                      <div id="emailRegexError" class="alert alert-danger alert-dismissible fade show">
+                         Enter valid email address.
+                        <button type="button" class="close" onclick={hideBootstrapErrors} name="emailRegexError">&times;</button>
+                      </div>
+                    </template>
+                      <template if:true={firstNameError}>
+                          <div id="firstNameErrorAlert" class="alert alert-danger alert-dismissible fade show">
+                            First name is mandatory.
+                            <button type="button" class="close" onclick={hideBootstrapErrors} name="firstNameError" >&times;</button>
+                          </div>
+                      </template>
+                      <template if:true={SurNameError}>
+                          <div id="SurNameErrorAlert" class="alert alert-danger alert-dismissible fade show">
+                            Surname is mandatory.
+                            <button type="button" class="close" onclick={hideBootstrapErrors} name="SurNameError" >&times;</button>
+                          </div>
+                      </template>
+                      <template if:true={EmailError}>
+                          <div id="EmailErrorAlert" class="alert alert-danger alert-dismissible fade show">
+                             Email is mandatory.
+                            <button type="button" class="close" onclick={hideBootstrapErrors} name="EmailError" >&times;</button>
+                          </div>
+                      </template>
+                      <template if:true={mobileError}>
+                          <div id="MobileNumberErrorAlert" class="alert alert-danger alert-dismissible fade show">
+                             Mobile number is mandatory.
+                            <button type="button" class="close" onclick={hideBootstrapErrors} name="mobileNumber" >&times;</button>
+                          </div>
+                      </template>
+                      <template if:true={validAddressWithPostcodeError}>
+                          <div id="validAddressWithPostcodeError" class="alert alert-danger alert-dismissible fade show">
+                             Enter vaild address.
+                            <button type="button" class="close" onclick={hideBootstrapErrors} name="validAddressWithPostcodeError">&times;</button>
+                          </div>
+                      </template>
+                      <template if:true={PhonelengthError}>
+                          <div id="PhonelengthError" class="alert alert-danger alert-dismissible fade show">
+                               Enter a valid phone number that starts with '07' and it also must be of 11 digits.
+                              <button type="button" class="close" onclick={hideBootstrapErrors} name="Phonelength" >&times;</button>
+                          </div>
+                      </template>
+                        
+                      <form class="sf-custom-form ew_sf">
+                         <template if:true={getContactRecord}>
+                              <div class="row">
+                                  <div class="form-group col-md-6 col-lg-5 ">   
+                                      <lightning-input  type="text" name="companyname" value={CompanyName}
+                                      label="Company name" class="cnameCmp" disabled="" ></lightning-input>
+                                  </div>
+                               </div> 
+                              <div class="row">
+                                      <div class="form-group col-md-4 col-lg-2">
+                                        <label for="sf-Title">Title</label>
+                                        <select class="form-control"  id="selectedId" onchange={titleInpChange} disabled={flag}>
+                                          <!-- <option>-- Select Title --</option> -->
+                                          <option>--None--</option>
+                                          <template if:true={salutationPicklist}>
+                                            <template for:each={salutationPicklist} for:item='item' >
+                                              <template if:true={item.value}>
+                                                <option key={item.key} selected>{item.key} </option>
+                                              </template>
+                                              <template if:false={item.value}>
+                                                <option key={item.key} >{item.key} </option>
+                                              </template>
+                                            </template>
+                                          </template>
+                                        </select>
+                                      </div>
+                                    
+                                   <div class="form-group col-md-6 col-lg-5 capitalize_wrapper">   
+                                    <lightning-input type="text" name="firstname" value={cp.First_Name__c}
+                                      label="First name" class="fnameCmp" disabled={flag}
+                                      onchange={fnameInpChange}></lightning-input>
+                                  </div>
+                                  <div class="form-group col-md-6 col-lg-5 capitalize_wrapper">
+                                      <lightning-input type="text" name="lastname" value={cp.Last_Name__c} label="Surname"
+                                      class="lnameCmp" onchange={lnameInpChange} disabled={flag}></lightning-input>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="form-group col-md-6 col-lg-5">
+                                      <lightning-input type="text" name="email" value={cp.Primary_Email__c}
+                                      label="Customer email address" class="emailCmp" disabled=""></lightning-input>
+                                  </div>
+                                  <div class="form-group col-md-6 col-lg-5">
+                                      <lightning-input type="text" name="AlternateEmail" value={cp.Other_Emails__c} 
+                                      label="Additional email address " class="emailCmp" onchange={alternateemailInpChange}
+                                      disabled={flag}></lightning-input>
+                                  </div>
+                                  <div class="form-group col-md-6 col-lg-5">
+                                      <label for="sf-Telephone">Telephone number</label>
+                                       <div class="sf-Telephone form-row">
+                                        <!-- <div class="form-row"> -->
+                                          <!-- <div class="slds-p-horizontal_medium">
+                                              <lightning-combobox name="phoneCodes" value={Phone_Code__c}
+                                               options={countrycode}  class="codeCmp" placeholder="+44"  disabled={flag}> </lightning-combobox> 
+                                          </div> -->
+                                          <div class="col-3">
+                                            <label for="sf-Title"></label>
+                                            <select class="form-control" onchange={phoneCodeInpChange} disabled={flag} >
+                                              <template if:true={countrycode}>
+                                                <template for:each={countrycode} for:item='item' >
+                                                  <template if:true={item.value}>
+                                                    <option key={item.key} selected>{item.key} </option>
+                                                  </template>
+                                                  <template if:false={item.value}>
+                                                    <option key={item.key} >{item.key} </option>
+                                                  </template>
+                                                </template>
+                                              </template>
+                                            </select>
+                                          </div>
+                                          <div class="col-9">
+                                              <lightning-input type="text" name="phone" value={cp.Phone__c} class="phnCmp"
+                                              onchange={phoneInpChange} disabled={flag}></lightning-input>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="form-group col-md-6 col-lg-5">
+                                      <!-- <label for="sf-postcode">Address including postcode</label>
+                                      <input type="text" class="form-control" id="sf-postcode">
+                                      <a href="#" class="look-up">search</a>
+                                      <a href="#" class="enter_manually">Enter Manually</a> -->
+                                      <template if:false={showButtons}>
+                                        <lightning-textarea name="address" label="Address including postcode" value={MailingAddress} onchange={addressInpChange}  disabled={flag}></lightning-textarea>
+                                        </template>
+                                        <template if:true={showButtons}>
+                                        <c-ei_-e-w-i_-addresss-finder  addresslabel="Address" street-name={MailingStreet}  town-city={MailingCity}
+                                        county={MailingState}  post-code={MailingPostalCode}  country={MailingCountry}
+                                        onfieldchange={addressFieldChangeHandler}  onselectingaddress={selectingAddressHandler} > 
+                                       </c-ei_-e-w-i_-addresss-finder>
+                                       </template>
+                                    </div>
+                              </div>
+                            
+                              <div class="row">
+                                  <div class="form-group col-md-12 text-right">
+                                      <!-- <div  class="see-all ew_btn">-->
+                                      <template if:false={showButtons}>
+                                          <a  class="see-all ew_btn" onclick={handleEdit}>Edit</a>
+                                          <!-- <lightning-button  label="Edit" onclick={handleEdit} ></lightning-button>  -->
+                                      </template>
+                                      <template if:true={showButtons}>
+                                          <a  class="see-all ew_btn" onclick={handleContactUpdate}>Save</a>
+                                      </template>
+                                      <!-- </div> -->
+                                  </div>
+                              </div>
+                              <template if:false={NonmemberLL}>
+                                <div class="errorMsgDiv">
+                              
+                                <h3 class="mt-5">UK payment details</h3>
+                                <div class="terms_box">
+                                  <p> {detail.myAccountMessage}</p>
+                              </div>
+                                
+                                <!--Start Error Messages-->
+                                <template if:true ={bankSuccessMessage}> 
+                                  <div id="bankSuccessMessage" class="alert alert-success alert-dismissible fade show">
+                                      Bank account updated successfully.
+                                    <button type="button" class="close" onclick={hideBootstrapErrors} name="bankSuccessMessage" >&times;</button>
+                                  </div>
+                              </template>
+
+                              <template if:true={nameOnAccountBlankError}> 
+                                <div  id="nameOnAccountBlankError" class="alert alert-danger alert-dismissible fade show" >
+                                   Name on account cannot be blank.
+                                  <button type="button" class="close" onclick={hideBootstrapErrors} name="nameOnAccountBlankError">&times;</button>
+                                </div>
+                              </template>
+
+                              <template if:true={nameOnAccountNumericError}> 
+                                <div  id="nameOnAccountNumericError" class="alert alert-danger alert-dismissible fade show" >
+                                   Name on account cannot be all numeric.
+                                  <button type="button" class="close" onclick={hideBootstrapErrors} name="nameOnAccountNumericError">&times;</button>
+                                </div>
+                              </template>
+
+                              <template if:true={nameOnAccountSpecialCharError}>
+                                <div  id="nameOnAccountSpecialCharError" class="alert alert-danger alert-dismissible fade show" >
+                                  Name cannot contain special character.
+                                  <button type="button" class="close" onclick={hideBootstrapErrors}  name="nameOnAccountSpecialCharError" >&times;</button>
+                                </div>
+                              </template>
+
+                              <template if:true={accountNumberLengthError}>
+                                <div id="accountNumberLengthError" class="alert alert-danger alert-dismissible fade show" >
+                                  Account number must be eight digits.<!--You must provide eight numbers.-->
+                                  <button type="button"  class="close" onclick={hideBootstrapErrors} name="accountNumberLengthError" >&times;</button>
+                                </div>
+                              </template>
+
+                              <template if:true={accountNumberBlankError}>
+                                <div  id="accountNumberBlankError" class="alert alert-danger alert-dismissible fade show" >
+                                  Account number cannot be blank.
+                                  <button type="button"  class="close" onclick={hideBootstrapErrors} name="accountNumberBlankError" >&times;</button>
+                                </div>
+                              </template>
+
+                              <template if:true={invalidAccountNumberError}>
+                                <div  id="invalidAccountNumberError"  class="alert alert-danger alert-dismissible fade show" >
+                                  You must provide a valid account number.
+                                  <button  type="button" class="close"  onclick={hideBootstrapErrors} name="invalidAccountNumberError" >&times;</button>
+                                </div>
+                              </template>
+
+                              <template if:true={sortCodeBlankError}>
+                                <div  id="sortCodeBlankError" class="alert alert-danger alert-dismissible fade show">
+                                   Sort code cannot be blank.
+                                  <button type="button" class="close" onclick={hideBootstrapErrors} name="sortCodeBlankError" >&times;</button>
+                                </div>
+                              </template>
+
+                              <template if:true={bankOfAmericaSortCode}>
+                                <div id="bankOfAmericaSortCode" class="alert alert-danger alert-dismissible fade show">
+                                   We do not support payments to Bank of America.
+                                  <button type="button" class="close" onclick={hideBootstrapErrors} name="bankOfAmericaSortCode" >&times;</button>
+                                </div>
+                              </template>
+
+                              <template if:true={Sortcodelengtherror}>
+                                <div id="Sortcodelengtherror"  class="alert alert-danger alert-dismissible fade show" >
+                                  Sort code must be six digits.<!-- You must provide six numbers.-->
+                                    <button type="button" class="close" onclick={hideBootstrapErrors} name="Sortcodelengtherror">&times; </button>
+                                </div>
+                              </template>
+
+                              <template if:true={invalidSortCodeError}>
+                                <div id="invalidSortCodeError"  
+                                    class="alert alert-danger alert-dismissible fade show" role="alert"> You must provide a valid sort code
+                                    <button type="button" data-dismiss="alert" aria-label="Close" class="close" 
+                                     onclick={hideBootstrapErrors} name="invalidSortCodeError"> &times; </button>
+                                </div>
+                             </template> 
+                               <!--End Error Messages-->
+                              <div class="row">
+                                  <div class="form-group col-md-6 col-lg-5">
+                                    <label for="sf-Name_on">Name on account</label> 
+                                    <lightning-input type="text" name="bankAccountName" value={cp.Bank_Account_Holder_Name__c}
+                                    onchange={handlebankAccountNamechange} placeholder="Enter account name" disabled={detail.isBankMemberNotes} ></lightning-input>
+                                  </div>
+                                  <div class="form-group col-md-6 col-lg-5">
+                                      <label for="sf-Account">Account number</label>
+                                      <lightning-input type="text" maxlength="8" name="bankAccountNumber" value={cp.Bank_Account_Number__c}
+                                        onchange={handlebankAccountNumberChange} placeholder="Enter account number" disabled={detail.isBankMemberNotes}></lightning-input>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                <div class="form-group col-md-6 col-lg-5">
+                                    <label for="sf-Sort">Sort code</label>
+                                    <lightning-input type="text" name="sortcode" maxlength="6" value={cp.Bank_Sort_Code__c} class="textcolor"
+                                    onchange={handlesortcodeChange} placeholder="Enter sort code" disabled={detail.isBankMemberNotes} ></lightning-input>
+                                </div>
+                                <div class="form-group col-md-6 col-lg-5">
+                                    <label for="sf-Bank">Bank name</label>
+                                    <lightning-input type="text" data-name = "BankName" name="Bankname" value={cp.Bank_Name__c}
+                                    onchange={handleChangename} placeholder="" disabled="" ></lightning-input>
+                                </div>
+                            </div>
+                            <template if:false={detail.isBankMemberNotes}>
+                              <div class="row">
+                                <div class="form-group col-md-12  text-right">
+                                    <a  class="see-all ew_btn" onclick={handleBankUpdate}>Submit</a>
+                                    <!-- <lightning-button  label="Submit" onclick={handleSave}></lightning-button> -->
+
+                                    <!-- <button type="submit" class="see-all ew_btn" >Submit</button> -->
+                                </div>
+                            </div>
+                          </template>
+
+                           
+                      <!--Use template if:true to display/hide popup based on isModalOpen value--> 
+                      <template if:true={showPopup}>
+                       <!-- Modal/Popup Box LWC starts here -->
+                       <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                           <div class="slds-modal__container">
+                               <!-- Modal/Popup Box LWC header here -->
+                               <header class="slds-modal__header">
+                                   <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                                       <lightning-icon icon-name="utility:close"
+                                           alternative-text="close"
+                                           variant="inverse"
+                                           size="small" ></lightning-icon>
+                                       <span class="slds-assistive-text">Close</span>
+                                   </button>
+                                   <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"></h2>
+                               </header>
+                               <!-- Modal/Popup Box LWC body starts here -->
+                               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                   <p><b>You are changing the bank details previously provided to TDS for this case.
+                                     By changing these, you are accepting that payment should be made to these details
+                                   </b></p>
+                                   <button class="slds-button slds-button_brand" onclick={handleBankUpdate} title="OK">OK</button>
+                                   <button class="slds-button slds-button_brand" onclick={closeModal} title="OK">Cancel</button>
+                                  </div>
+                           </div>
+                       </section>
+                       <div class="slds-backdrop slds-backdrop_open"></div>
+                      </template>
+                          </div>
+                          </template>
+                          </template>
+                      </form>
+                    </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      </div>
+    </template>
+</template>

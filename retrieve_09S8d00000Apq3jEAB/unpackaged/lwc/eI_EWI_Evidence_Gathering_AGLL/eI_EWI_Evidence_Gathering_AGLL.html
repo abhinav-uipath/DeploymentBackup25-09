@@ -1,0 +1,2041 @@
+<template>
+	<template if:true ={showDetails}> 
+	<div class="tab-content custom-tab-content" id="sf-tabContent">
+		
+		<template if:true={ClaimsDetails}>
+		<template if:true={ViewContinue}>
+			<div class="tab-pane fade show active" id="sf-deposit1" role="tabpanel" aria-labelledby="sf-deposit-tab">
+
+				<div class="list-of-btns" data-id="scroll-to-top">
+					<div class="container">
+						<a class="go-back" onclick={handlegotoDepositSummary}><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+						<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+					</div>
+				</div>
+
+				<div class="deposit-agent">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-9">
+								<section class="deposit_steps">
+									<div class="deposit_steps_count">
+										<div class="state-indicator">
+											<span class="circle">1</span>
+											<p>Key documents</p>
+										</div>
+										<div class="state-indicator">
+											<span class="circle">2</span>
+											<p>Claim breakdown</p>
+										</div>
+										<div class="state-indicator">
+											<span class="circle">3</span>
+											<p>Additional comments</p>
+										</div>
+										<div class="state-indicator">
+											<span class="circle">4</span>
+											<p>Review submission</p>
+										</div>
+									</div>
+
+									<div class="deposit_steps_detail">
+										<h6 class="text-center">You have until {ClaimsDetails.respondDate} to submit details of your case and your evidence.</h6>
+
+										<div class="claim-summary_gray-panel mt-5">
+											<h5>Dispute summary</h5>
+											<div class="row">
+												<div class="col-lg-6 col-sm-9">
+													<p>Amount requested by you</p>
+												</div>
+												<div class="col-lg-6 col-sm-3">
+													<p><lightning-formatted-number value={ClaimsDetails.totalAgreedByAGLL} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></p>
+												</div>
+											</div>
+											<div class="row my-4">
+												<div class="col-lg-6 col-sm-9">
+													<p class="text-right">- Of which is agreed by the tenant(s)</p>
+												</div>
+												<div class="col-lg-6 col-sm-3">
+													<p>(<lightning-formatted-number value={ClaimsDetails.totalAgreedByTT} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number>)</p>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-lg-6 col-sm-9">
+													<p><b>Disputed amount</b></p>
+												</div>
+												<div class="col-lg-6 col-sm-3">
+													<p><b><lightning-formatted-number value={ClaimsDetails.remainDisputeAmount} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></b></p>
+												</div>
+											</div>
+											<p class="mt-4">Please ensure that you have released any agreed amounts in accordance with the parties' instructions.</p>
+										</div>
+
+										<div class="row">
+											<div class="col-lg-12 col-md-12">
+												<div class="agree-container">
+													<div class="agree-detail" style="display: block;">
+														<div class="form-group row">
+															<div class="col-sm-4">
+																<div class="request-section">
+																	<label>Requested by you</label>
+																</div>
+															</div>
+															<div class="col-sm-4">
+																<div class="response-section">
+																	<label>Agreed by tenant(s)</label>
+																</div>
+															</div>
+															<div class="col-sm-4">
+																<div class="dispute-section dispute_EW">
+																	<label>Amount in dispute</label>
+																</div>
+															</div>
+															<template for:each={disputeItems} for:item="claimItem" for:index="index">
+																<div class="col-sm-4" key={claimItem.key}>
+																	<div class="request-section">
+																		<template if:true={claimItem.isOther}>
+																			<div class="form-group">
+																				<label for="Rent" class=" col-form-label">{claimItem.key}</label>
+																				<!-- <textarea rows="3" class="form-control" disabled id="Others">&#163;200.00 &#163; Lightboxs</textarea> -->
+																				<lightning-textarea type="number"
+																						title={index} value={claimItem.isOther}
+																						disabled="true"
+																						placeholder="£0.00">
+																				</lightning-textarea>
+																			</div>
+																		</template>
+																		<template if:false={claimItem.isOther}>
+																			<div class="form-group">
+																				<label for="Rent" class=" col-form-label">{claimItem.key}</label>
+																				<!-- <input type="text" disabled class="form-control" value={claimItem.requestedByAGLL}> -->
+																				<lightning-input type="number"
+																						title={index} value={claimItem.requestedByAGLL}
+																						disabled="true"
+																						formatter="currency" step="0.01"
+																						placeholder="£0.00"
+																						onfocus={removeZero}>
+																				</lightning-input>
+																			</div>
+																		</template>
+																	</div>
+																</div>
+
+																<div class="col-sm-4" key={claimItem.key}>
+																	<div class="response-section">
+																		<div class="form-group">
+																			<label class="col-form-label">{claimItem.key}</label>
+																			<!-- <input type="text" disabled class="form-control" value={claimItem.agreedbyTenant}> -->
+																			<lightning-input type="number"
+																					title={index} value={claimItem.agreedbyTenant}
+																					disabled="true"
+																					formatter="currency" step="0.01"
+																					placeholder="£0.00"
+																					onfocus={removeZero}>
+																			</lightning-input>
+																		</div>
+																	</div>
+																</div>
+
+																<div class="col-sm-4" key={claimItem.key}>
+																	<div class="dispute-section dispute_EW">
+																		<div class="form-group">
+																			<label class="col-form-label">{claimItem.key}</label>
+																			<!-- <input type="text" disabled class="form-control" value={claimItem.amountInDispute}> -->
+																			<lightning-input type="number"
+																					title={index} value={claimItem.amountInDispute}
+																					disabled="true"
+																					formatter="currency" step="0.01"
+																					placeholder="£0.00"
+																					onfocus={removeZero}>
+																			</lightning-input>
+																		</div>
+																	</div>
+																</div>
+															</template>
+															
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+									<!-- Code Add by Swati EID 229(Start)-->
+									<template if:true = "{isBankDetailsEditable}">
+										<template if:true ={isBankMemberNotes}> 
+											<p>You will be unable to edit these bank details as TDS have been asked to make any payments due to the bank details shown below.</p>	
+										</template>
+										<template if:false ={isBankMemberNotes}> 								
+											<p>Please provide us with or review your payment instructions. You are unable to continue to submit your evidence if you do not provide these. 
+											These payment instructions will be used for any award due to you following adjudication. 
+											Joint tenants will need to provide their payment instructions for their share, via their own TDS account.</p>
+											<br>
+										</template>	
+											<!--Start Error Messages-->
+											<template if:true ={bankSuccessMessage}> 
+												<div id="bankSuccessMessage" class="alert alert-success alert-dismissible fade show">
+													Your payment instructions have been updated successfully.
+												<button type="button" class="close" onclick={hideBootstrapErrors} name="bankSuccessMessage" >&times;</button>
+												</div>
+											</template>
+			
+											<template if:true={nameOnAccountBlankError}> 
+											<div  id="nameOnAccountBlankError" class="alert alert-danger alert-dismissible fade show" >
+												Name on account cannot be blank.
+												<button type="button" class="close" onclick={hideBootstrapErrors} name="nameOnAccountBlankError">&times;</button>
+											</div>
+											</template>
+			
+											<template if:true={nameOnAccountSpecialCharError}>
+											<div  id="nameOnAccountSpecialCharError" class="alert alert-danger alert-dismissible fade show" >
+												Name cannot contain special character.
+												<button type="button" class="close" onclick={hideBootstrapErrors}  name="nameOnAccountSpecialCharError" >&times;</button>
+											</div>
+											</template>
+			
+											<template if:true={accountNumberLengthError}>
+											<div id="accountNumberLengthError" class="alert alert-danger alert-dismissible fade show" >
+												You must provide eight numbers for a valid account number.<!--You must provide eight numbers.-->
+												<button type="button"  class="close" onclick={hideBootstrapErrors} name="accountNumberLengthError" >&times;</button>
+											</div>
+											</template>
+			
+											<template if:true={accountNumberBlankError}>
+											<div  id="accountNumberBlankError" class="alert alert-danger alert-dismissible fade show" >
+												Account number cannot be blank.
+												<button type="button"  class="close" onclick={hideBootstrapErrors} name="accountNumberBlankError" >&times;</button>
+											</div>
+											</template>
+			
+											<template if:true={invalidAccountNumberError}>
+											<div  id="invalidAccountNumberError"  class="alert alert-danger alert-dismissible fade show" >
+												You must provide a valid account number.
+												<button  type="button" class="close"  onclick={hideBootstrapErrors} name="invalidAccountNumberError" >&times;</button>
+											</div>
+											</template>
+			
+											<template if:true={sortCodeBlankError}>
+											<div  id="sortCodeBlankError" class="alert alert-danger alert-dismissible fade show">
+												Sort code cannot be blank.
+												<button type="button" class="close" onclick={hideBootstrapErrors} name="sortCodeBlankError" >&times;</button>
+											</div>
+											</template>
+			
+											<template if:true={bankOfAmericaSortCode}>
+											<div id="bankOfAmericaSortCode" class="alert alert-danger alert-dismissible fade show">
+												We do not support payments to Bank of America.
+												<button type="button" class="close" onclick={hideBootstrapErrors} name="bankOfAmericaSortCode" >&times;</button>
+											</div>
+											</template>
+			
+											<template if:true={Sortcodelengtherror}>
+											<div id="Sortcodelengtherror"  class="alert alert-danger alert-dismissible fade show" >
+												You must provide six numbers for a valid sort code<!-- You must provide six numbers.-->
+												<button type="button" class="close" onclick={hideBootstrapErrors} name="Sortcodelengtherror">&times; </button>
+											</div>
+											</template>
+			
+											<template if:true={invalidSortCodeError}>
+											<div id="invalidSortCodeError"  
+												class="alert alert-danger alert-dismissible fade show" role="alert"> You must provide a valid sort code
+												<button type="button" data-dismiss="alert" aria-label="Close" class="close" 
+													onclick={hideBootstrapErrors} name="invalidSortCodeError"> &times; </button>
+											</div>
+											</template> 
+											<!--End Error Messages-->
+
+											<div class="row">
+												<div class="form-group col-md-12  text-left">	
+													<template if:true ={isBankDetailsEmpty}> 										
+														<a  class="see-all ew_btn" onclick={handleShowBankDetails}>Add bank details</a>
+													</template>	
+													<template if:false ={isBankDetailsEmpty}> 									
+														<a  class="see-all ew_btn" onclick={handleShowBankDetails}>View/edit bank details</a>
+													</template>
+												</div>
+											</div>
+											<br>
+											<template if:true ={showBankDetails}> 	
+												<div class="row">
+													<div class="form-group col-md-6 col-lg-5">
+														<label for="sf-Name_on">Name on account</label> 
+														<lightning-input type="text" name="bankAccountName" value={bankHolderName}
+														onchange={handlebankAccountNamechange} placeholder="Enter account name" disabled={isBankMemberNotes} ></lightning-input>
+													</div>
+													<div class="form-group col-md-6 col-lg-5">
+														<label for="sf-Account">Account number</label>
+														<lightning-input type="text" maxlength="8" name="bankAccountNumber"  value={bankAccountNo}
+															onchange={handlebankAccountNumberChange} placeholder="Enter account number" disabled={isBankMemberNotes}></lightning-input>
+													</div>
+												</div>
+												<div class="row">
+													<div class="form-group col-md-6 col-lg-5">
+														<label for="sf-Sort">Sort code</label>
+														<lightning-input type="text" name="sortcode" maxlength="6" value={bankSortCode}  class="textcolor"
+														onchange={handlesortcodeChange} placeholder="Enter sort code" disabled={isBankMemberNotes} ></lightning-input>
+													</div>
+													<div class="form-group col-md-6 col-lg-5">
+														<label for="sf-Bank">Bank name</label>
+														<lightning-input type="text" data-name = "BankName" name="Bankname" value={bankName}
+														onchange={handleChangename} placeholder="" disabled=""></lightning-input>
+													</div>
+												</div>
+												<template if:false ={isBankMemberNotes}> 
+													<div class="row">
+														<div class="form-group col-md-12  text-right">
+															<a  class="see-all ew_btn" onclick={handleBankUpdate}>Submit</a>
+														</div>
+													</div>
+												</template>
+											</template>
+											<br>
+										
+										<br>
+									</template>
+									<!-- Code Add by Swati EID 229(End)-->
+
+
+										<h6>Please give your consent to the following:</h6>
+
+										<p>I give authority to TDS to consider my dispute and confirm that:</p>
+										<ul class="custom-list">
+											<li>I accept responsibility for ensuring that any personal information I submit complies with the requirements of the Data Protection Act 2018, and the UK GDPR;</li>
+											<li>I consent to the information I provide being shared with the other party to the dispute, the adjudicator and anyone else involved in resolving it;</li>
+											<li>I agree that the decision of the adjudicator will be final and binding in accordance with the Rules for the Independent Resolution of Tenancy Deposit Disputes.</li>
+										</ul>
+
+										<div class="form-row">
+											<div class="form-group col-md-12 text-right">
+												<div class="form-check">
+													<input type="checkbox" class="form-check-input" disabled={ClaimsDetails.AGLL_Respond_Evidance_Gathering__c} checked={ClaimsDetails.Consent_box_AGLL__c} onclick={handleCheckConsent} id="exampleCheck2">
+													<!-- <lightning-input type="checkbox" checked={ClaimsDetails.consent}></lightning-input> -->
+													<label class="form-check-label d-inline-block" for="exampleCheck2">I consent to the above</label>
+												</div>
+											</div>
+										</div>
+
+										<div class="text-right">
+											<button class="see-all consentbox" onclick={handlegotokeyDocuments}>Continue</button>
+										</div>
+									</div>
+								</section>
+							</div>
+							<div class="col-md-3 info-right-tab">
+								<p>This is your opportunity to provide details of your claim and evidence to support it. You can return to edit your response at any time up to {ClaimsDetails.respondDate}. During the process, your submission will be saved automatically each time you press 'Continue'. </p>
+								<p>After {ClaimsDetails.respondDate}, your information will be made available to the tenant(s) and they will be asked to provide their response. The adjudicator will use all the information from both parties in making their decision. It is important that you provide the information you wish the adjudicator to see now. TDS Insured will generally not contact you again to ask for more information.</p>
+								<p>Please respond fully to all the questions asked. It is your responsibility to explain your claim clearly and highlight the relevant evidence.</p>
+								<p>You will be asked first whether you have some key documents.  Please be aware that the success of your claim may be compromised if you are unable to provide them.  If you do not have one or more of the key documents, please consider whether you wish to continue with your claim. You can opt to withdraw from the dispute at any point during the evidence submission process by selecting the option to 'Cancel dispute'. The outstanding balance of the deposit would be returned to the tenant(s).</p>
+								<p>Disputed funds are also required to be sent within 5 working days to TDS.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template if:true={keyDocuments}>
+			<div class="tab-pane fade show active" id="sf-deposit2" role="tabpanel" aria-labelledby="sf-deposit-tab">
+
+				<div class="list-of-btns" data-id="scroll-to-top">
+					<div class="container">
+						<h2>Submit evidence</h2>
+						<a class="go-back" onclick={handleGoBackStep} title="viewContinue"><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+						<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+					</div>
+				</div>
+
+				<div class="deposit-agent">
+					<div class="container">
+						<div class="row">
+								<div class="col-md-9">
+									<section class="deposit_steps">
+										<div class="deposit_steps_count">
+											<div class="state-indicator active">
+												<span class="circle">1</span>
+												<p>Key documents</p>
+											</div>
+											<div class="state-indicator">
+												<span class="circle">2</span>
+												<p>Claim breakdown</p>
+											</div>
+											<div class="state-indicator">
+												<span class="circle">3</span>
+												<p>Additional comments</p>
+											</div>
+											<div class="state-indicator">
+												<span class="circle">4</span>
+												<p>Review submission</p>
+											</div>
+										</div>
+
+										<div class="deposit_steps_detail">
+												<h6 class="text-center">You have until {ClaimsDetails.respondDate} to submit details of your case and your evidence.</h6>
+												<!-- <form> -->
+													<template if:true={Isclaimamountexceed}>
+														<div class="form-group row">
+															<label class="col-sm-4 col-form-label">Total claim amount</label>
+															<div class="col-sm-8">
+																	<label class="col-form-label evi_label">Does your total claim exceed the deposit amount?</label>																
+																	<a class="learn-more blue_theme exceedclaimyes" onclick={clickYes} title="Exceedclaim">Yes</a>
+																	<a class="learn-more blue_theme exceedclaimno" onclick={clickNo} title="Exceedclaim">No</a>
+															</div>
+														</div>
+													</template>
+													<template if:true={ClaimsDetails.claimExceed}>
+														<div class="form-group row">
+															<div class="col-lg-12 col-md-12">
+																	<p>If it is the case that your total claim exceeds the deposit, you have the option to tell the adjudicator about this.  The adjudicator will consider this information when making their award but can only award a maximum of the deposit amount. Please provide a breakdown of your claim below.</p>
+																		<lightning-textarea rows="4" name="claimExceedsComment" value={ClaimsDetails.claimExceedsComment} onchange={handleClaimExceedCommentValuesChange} placeholder=""></lightning-textarea>
+																		<template if:true={ClaimsDetails.claimExceedsComment_length}>
+																			<p style="color:red">You are unable to enter more than 30000 characters in this field.</p>
+																		</template>
+															</div>
+														</div>
+													</template>
+													<!-- <template if:false={ClaimsDetails.claimExceed}> -->
+														<div class="form-group row">
+															<label class="col-sm-4 col-form-label">Tenant's obligations and use of the deposit</label>
+															<div class="col-sm-8">
+																	<label class="col-form-label evi_label">Do you have a tenancy agreement?</label>
+																	<a class="learn-more blue_theme tenantobligationsyes" onclick={clickYes} title="TenantObligations">Yes</a>
+																	<a class="learn-more blue_theme tenantobligationsno" onclick={clickNo} title="TenantObligations">No</a>
+																	<template if:true={ClaimsDetails.isTenantObligationsValue}>
+																		<!-- <template if:false={ClaimsDetails.TenantObligations}> -->
+																		<template if:true={ClaimsDetails.TenantObligationsNoWarning}>
+																			<div class="row">
+				
+																				<div class="col-lg-9">
+																						<div class="alert alert-warning alert-dismissible fade show">
+																								<img src={warning_icon} alt="warning Icon">
+																								<div>
+																										<strong>Warning!</strong> Without this document, your chances of success may be compromised. You can opt to withdraw from the dispute at any time during the evidence gathering process by selecting 'Cancel dispute'. This means that the outstanding deposit would need to be returned to the tenant(s).
+																								</div>
+																								<button type="button" class="close" data-dismiss="alert" 
+																									onclick={hideBootstrapErrors} name="TenantObligationsNo"
+																								>&times;</button>
+																						</div>
+																				</div>
+																			</div>
+																		</template>	
+																		<template if:true={ClaimsDetails.isTenantObligationsEviAttachment}>
+																			<div class="row">
+				
+																				<div class="col-lg-9">
+																						<div class="alert alert-warning alert-dismissible fade show">
+																								<img src={warning_icon} alt="warning Icon">
+																								<div>
+																										<strong>Warning!</strong> You have indicated you have this document to add. If this is no longer the case, please press 'No'.
+																								</div>
+																								<button type="button" class="close" data-dismiss="alert"
+																								onclick={hideBootstrapErrors} name="isTenantObligationsEviAttachment"
+																								>&times;</button>
+																						</div>
+																				</div>
+																			</div>
+																		</template>	
+																	</template>
+																</div>
+														</div>
+														<template if:true={ClaimsDetails.isTenantObligationsValue}>
+															<template if:false={ClaimsDetails.isTenantObligationsEviAttachment}>
+																<template if:true={ClaimsDetails.TenantObligations}>
+																	<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																		oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																		record-id={ClaimsDetails.Id} 
+																		evidance-attachment={evidenceAttachments}
+																		evidence-categories="Tenant obligations"
+																		user-type={ClaimsDetails.Dispute_Responded_By__c}
+																		source="Dispute Response" scheme="EWI" >
+																	</c-e-i_-e-w-i_file-upload>
+																</template>
+															</template>
+														</template>
+
+														<div class="form-group row">
+															<label class="col-sm-4 col-form-label">Condition of the property at the start of the tenancy</label>
+															<div class="col-sm-8">
+																	<label class="col-form-label evi_label">Do you have an inventory/check-in report?</label>
+																	<a class="learn-more blue_theme inventorycheckyes" onclick={clickYes} title="inventorycheck">Yes</a>
+																	<a class="learn-more blue_theme inventorycheckno" onclick={clickNo} title="inventorycheck">No</a>
+																	<template if:true={ClaimsDetails.isInventorycheckValue}>
+																		<!-- <template if:false={ClaimsDetails.inventorycheck}> -->
+																		<template if:true={ClaimsDetails.inventorycheckNoWarning}>
+																			<div class="row">
+				
+																				<div class="col-lg-9">
+																						<div class="alert alert-warning alert-dismissible fade show">
+																								<img src={warning_icon} alt="warning Icon">
+																								<div>
+																										<strong>Warning!</strong> Without this document, your chances of success may be compromised. You can opt to withdraw from the dispute at any time during the evidence gathering process by selecting 'Cancel dispute'. This means that the outstanding deposit would need to be returned to the tenant(s).
+																								</div>
+																								<button type="button" class="close" data-dismiss="alert"
+																								onclick={hideBootstrapErrors} name="inventorycheckNo"
+																								>&times;</button>
+																						</div>
+																				</div>
+																			</div>
+																		</template>
+																		<template if:true={ClaimsDetails.isInventorycheckEviAttachmentFound}>
+																			<div class="row">
+				
+																				<div class="col-lg-9">
+																						<div class="alert alert-warning alert-dismissible fade show">
+																								<img src={warning_icon} alt="warning Icon">
+																								<div>
+																										<strong>Warning!</strong> You have indicated you have this document to add. If this is no longer the case, please press 'No'.
+																								</div>
+																								<button type="button" class="close" data-dismiss="alert"
+																								onclick={hideBootstrapErrors} name="isInventorycheckEviAttachmentFound"
+																								>&times;</button>
+																						</div>
+																				</div>
+																			</div>
+																		</template>	
+																	</template>
+																</div>
+														</div>
+														<template if:true={ClaimsDetails.isInventorycheckValue}>
+															<template if:false={ClaimsDetails.isInventorycheckEviAttachmentFound}>
+																<template if:true={ClaimsDetails.inventorycheck}>
+																	<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																		oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																		record-id={ClaimsDetails.Id} 
+																		evidance-attachment={evidenceAttachments}
+																		evidence-categories="Inventorycheck in report"
+																		user-type={ClaimsDetails.Dispute_Responded_By__c}
+																		source="Dispute Response" scheme="EWI" >
+																	</c-e-i_-e-w-i_file-upload>
+																</template>
+															</template>
+														</template>
+
+														<div class="form-group row">
+															<label class="col-sm-4 col-form-label">Condition of the property at the end of the tenancy</label>
+															<div class="col-sm-8">
+																	<label class="col-form-label evi_label">Do you have a check-out report?</label>
+																	<a class="learn-more blue_theme checkoutreportyes" onclick={clickYes} title="checkoutReport">Yes</a>
+																	<a class="learn-more blue_theme checkoutreportno" onclick={clickNo} title="checkoutReport">No</a>
+																	<template if:true={ClaimsDetails.isCheckoutReportValue}>
+																		<!-- <template if:false={ClaimsDetails.checkoutReport}> -->
+																		<template if:true={ClaimsDetails.checkoutReportNoWarning}>
+																			<div class="row">
+				
+																				<div class="col-lg-9">
+																						<div class="alert alert-warning alert-dismissible fade show">
+																								<img src={warning_icon} alt="warning Icon">
+																								<div>
+																										<strong>Warning!</strong> Without this document, your chances of success may be compromised. You can opt to withdraw from the dispute at any time during the evidence gathering process by selecting 'Cancel dispute'. This means that the outstanding deposit would need to be returned to the tenant(s).
+																								</div>
+																								<button type="button" class="close" data-dismiss="alert"
+																								onclick={hideBootstrapErrors} name="checkoutReportNo"
+																								>&times;</button>
+																						</div>
+																				</div>
+																			</div>
+																		</template>
+																		<template if:true={ClaimsDetails.isCheckoutReportEviAttachmentFound}>
+																			<div class="row">
+				
+																				<div class="col-lg-9">
+																						<div class="alert alert-warning alert-dismissible fade show">
+																								<img src={warning_icon} alt="warning Icon">
+																								<div>
+																										<strong>Warning!</strong> You have indicated you have this document to add. If this is no longer the case, please press 'No'.
+																								</div>
+																								<button type="button" class="close" data-dismiss="alert"
+																									onclick={hideBootstrapErrors} name="isCheckoutReportEviAttachmentFound"
+																									>&times;</button>
+																						</div>
+																				</div>
+																			</div>
+																		</template>	
+																	</template>
+																</div>
+														</div>
+														<template if:true={ClaimsDetails.isCheckoutReportValue}>
+															<template if:false={ClaimsDetails.isCheckoutReportEviAttachmentFound}>
+																<template if:true={ClaimsDetails.checkoutReport}>
+																	<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																		oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																		record-id={ClaimsDetails.Id} 
+																		evidance-attachment={evidenceAttachments}
+																		evidence-categories="Check out report"
+																		user-type={ClaimsDetails.Dispute_Responded_By__c}
+																		source="Dispute Response" scheme="EWI" >
+																	</c-e-i_-e-w-i_file-upload>
+																</template>
+															</template>
+														</template>
+
+														<template if:true={isShowPaymentOfRentKey}>
+															<div class="form-group row">
+																<label class="col-sm-4 col-form-label">Payment of rent</label>
+																<div class="col-sm-8">
+																		<label class="col-form-label evi_label">Do you have a rent statement?</label>
+																		<a class="learn-more blue_theme rentstatementyes" onclick={clickYes} title="rentStatement">Yes</a>
+																		<a class="learn-more blue_theme rentstatementno" onclick={clickNo} title="rentStatement">No</a>
+																		<template if:true={ClaimsDetails.isRentStatementValue}>
+																			<!-- <template if:false={ClaimsDetails.rentStatement}> -->
+																			<template if:true={ClaimsDetails.rentStatementNoWarning}>
+																				<div class="row">
+					
+																					<div class="col-lg-9">
+																							<div class="alert alert-warning alert-dismissible fade show">
+																									<img src={warning_icon} alt="warning Icon">
+																									<div>
+																											<strong>Warning!</strong> Without this document, your chances of success may be compromised. You can opt to withdraw from the dispute at any time during the evidence gathering process by selecting 'Cancel dispute'. This means that the outstanding deposit would need to be returned to the tenant(s).
+																									</div>
+																									<button type="button" class="close" data-dismiss="alert"
+																									onclick={hideBootstrapErrors} name="rentStatementNo"
+																									>&times;</button>
+																							</div>
+																					</div>
+																				</div>
+																			</template>
+																			<template if:true={ClaimsDetails.isRentStatementEviAttachmentFound}>
+																				<div class="row">
+					
+																					<div class="col-lg-9">
+																							<div class="alert alert-warning alert-dismissible fade show">
+																									<img src={warning_icon} alt="warning Icon">
+																									<div>
+																											<strong>Warning!</strong> You have indicated you have this document to add. If this is no longer the case, please press 'No'.
+																									</div>
+																									<button type="button" class="close" data-dismiss="alert"
+																									onclick={hideBootstrapErrors} name="isRentStatementEviAttachmentFound"
+																									>&times;</button>
+																							</div>
+																					</div>
+																				</div>
+																			</template>	
+																		</template>
+																	</div>
+															</div>
+															<template if:true={ClaimsDetails.isRentStatementValue}>
+																<template if:false={ClaimsDetails.isRentStatementEviAttachmentFound}>
+																	<template if:true={ClaimsDetails.rentStatement}>
+																		<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																			oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																			record-id={ClaimsDetails.Id} 
+																			evidance-attachment={evidenceAttachments}
+																			evidence-categories="Rent statement"
+																			user-type={ClaimsDetails.Dispute_Responded_By__c}
+																			source="Dispute Response" scheme="EWI" >
+																		</c-e-i_-e-w-i_file-upload>
+																	</template>
+																</template>
+															</template>
+														</template>
+													<!-- </template> -->
+
+													<div class="form-check">
+														<template if:true={showKeyDocumentsError}>
+															 <p class="error-msg text-right">
+																 <!-- Please respond all the required fields. -->
+																  {allFieldsRequiredErrorMsg}
+															 </p>
+														</template>
+														<br/>
+													</div>
+													
+													<div class="form-group row">
+														<div class="col-sm-12 col-lg-12 text-right">
+																<button type="submit" class="see-all blue_theme" onclick={handlegotoshowClaimBreakdown}>Continue</button>
+														</div>
+													</div>
+												<!-- </form> -->
+										</div>
+									</section>
+								</div>
+								<div class="col-md-3 info-right-tab">
+									<p>In this section, you should submit documents that may be relevant for multiple claim items. For example, if you have claims for cleaning and gardening, we only need you to submit your inventory once. You will be invited to submit additional evidence which is relevant to particular claims areas in the next step(s).</p>
+									<p>The following file types are supported:</p>
+									<p>.csv .doc .docx .pdf .ppsx .ppt .pptx .rtf .txt .xls .xlsx .odt .bmp .jpg .jpeg .png .tif .tiff .mp3 .wav .mov .mpeg .mpg .zip</p>
+									<p>You may add one file to each section. The size limit for any individual file is 20mb.</p>
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template if:true={showClaimBreakdown}>
+			<template for:each={disputeItems} for:item="desptItems" for:index="index">
+				<div key={desptItems.key}>
+					<template if:true={desptItems.isShow}>
+						<template if:true={desptItems.Cleaning}>
+							<div class="tab-pane fade show active" role="tabpanel" aria-labelledby="sf-deposit-tab">
+				
+								<div class="list-of-btns" data-id="scroll-to-top">
+									<div class="container">
+										<h2>Submit evidence</h2>
+										<a class="go-back" onclick={goToPreviousItem}><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+										<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+									</div>
+								</div>
+				
+								<div class="deposit-agent">
+									<div class="container">
+										<div class="row">
+											<div class="col-md-9">
+												<section class="deposit_steps">
+													<div class="deposit_steps_count">
+														<div class="state-indicator">
+																<span class="circle">1</span>
+																<p>Key documents</p>
+														</div>
+														<div class="state-indicator active">
+																<span class="circle">2</span>
+																<p>Claim breakdown</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">3</span>
+																<p>Additional comments</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">4</span>
+																<p>Review submission</p>
+														</div>
+													</div>
+				
+													<div class="deposit_steps_detail">
+														<h6 class="text-center">You have until {ClaimsDetails.respondDate} to submit details of your case and your evidence.</h6>
+														
+														<!-- <form> -->
+				
+																<h6 class="mt-5">Your claim for cleaning</h6>
+				
+																<div class="row">
+																	<div class="col-lg-12 col-md-12">
+																		<div class="agree-container">
+																				<div class="agree-detail" style="display: block;">
+																					<div class="form-group row">
+																						<div class="col-sm-4">
+																								<div class="request-section">
+																									<label>Requested by you</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.requestedByAGLL}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="response-section">
+																									<label>Agreed by tenant(s)</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.agreedbyTenant}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="dispute-section dispute_EW">
+																									<label>Amount in dispute</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.amountInDispute}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																					</div>
+																				</div>
+																		</div>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<p style="color:red;margin-left: 15px;">Please note, to save the information you add <u> you must click the 'Continue' button </u> at the bottom of the page. </p>
+																	<p style="color:red;margin-left: 15px;">If you leave this page without clicking ‘Continue’, the information added to this screen will not be saved. You can click continue and come back to this screen to add information at any time before your deadline expires. </p>
+																	<label class="col-sm-4 col-form-label">Please describe your claim for cleaning and set out each cleaning claim separately by room 
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">If your claim relates to more than one room, you will need to set out your claim room by room.</p>
+																	</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Claim_description_for_cleaning_agll__c" value={desptItems.Claim_description_for_cleaning_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Claim_description_for_cleaning_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What clause(s) in the tenancy agreement support your claim for cleaning? 
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 2 of the tenancy agreement under clause 11.3. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_clause_cleaning_agll__c" value={desptItems.Supporting_clause_cleaning_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_clause_cleaning_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of the property's cleanliness at the start of the tenancy? 
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 6 of the check in report under the heading 'Kitchen'. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Evidence_at_tenancystart_cleaning_agll__c" value={desptItems.Evidence_at_tenancystart_cleaning_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Evidence_at_tenancystart_cleaning_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of the property's cleanliness at the end of the tenancy? 
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 12 of the check out report under the heading 'Bedroom 1'. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Evidence_at_tenancy_end_for_cleaning_agl__c" value={desptItems.Evidence_at_tenancy_end_for_cleaning_agl__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Evidence_at_tenancy_end_for_cleaning_agl__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What evidence supports the value of the claim you are making? 
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">The invoice must clearly list each of the areas highlighted as cleaning claims above.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_evidence_for_cleaning_agll__c" value={desptItems.Supporting_evidence_for_cleaning_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_evidence_for_cleaning_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">Please upload evidence relating to your cleaning claim</label>
+																</div>
+				
+																<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																	oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																	record-id={ClaimsDetails.Id} 
+																	evidance-attachment={evidenceAttachments}
+																	evidence-categories="Cleaning"
+																	dispute-id={desptItems.Id}
+																	user-type={ClaimsDetails.Dispute_Responded_By__c}
+																	source="Dispute Response" scheme="EWI" >
+																</c-e-i_-e-w-i_file-upload>
+				
+																<div class="form-check">
+																	<template if:true={showDisputeItemError}>
+																		 <p class="error-msg text-right">
+																			 <!-- Please respond all the required fields. -->
+																			  {allFieldsRequiredErrorMsg}
+																		 </p>
+																	</template>
+																	<br/>
+																</div>
+
+																
+
+																<div class="form-group row">
+																	<div class="col-sm-12 col-lg-12 text-right">
+																		<button type="submit" class="see-all blue_theme" onclick={goToNextItem}>Continue</button>
+																	</div>
+																</div>
+														<!-- </form> -->
+				
+													</div>
+												</section>
+											</div>
+											<div class="col-md-3 info-right-tab">
+												<p>In this section, you should add information relevant to this area of your claim. Examples of useful information include photographs, invoices, correspondence or contractors' reports. </p>
+												<p>The following file types are supported: </p>
+												<p>.csv .doc .docx .pdf .ppsx .ppt .pptx .rtf .txt .xls .xlsx .odt .bmp .jpg .jpeg .png .tif .tiff .mp3 .wav .mov .mpeg .mpg .zip</p>
+												<p>If you provide a photograph, you will be asked to label it clearly. </p>
+												<p>If you are able to break down each claim to provide more detail it will help the adjudicator understand more about the sum you are claiming. When answering the questions, please refer to all of your evidence, including the tenancy agreement, inventory/check-in and check-out information to demonstrate how your evidence supports the claim you are making. </p>
+												<p>The adjudicator will not construct the claim for you from the evidence you provide so you should point out clearly how the evidence you have provided supports each element of your claim. </p>
+												<p>If you are having difficulty providing evidence or answering the questions, you can return and complete or add to your submission before {ClaimsDetails.respondDate}. If you do not have relevant evidence, you may wish to consider cancelling the dispute. If you do so, the outstanding deposit will be due back to the tenant(s).</p>
+												<p>The size limit for any individual file is 20mb. You may add up to 10 files for cleaning and 5 files for damage, redecoration and gardening, in addition to the key documents previously added.</p>
+													<!-- You may add up to 5 files for each claim type, in addition to the key documents previously added.</p> -->
+												<!-- <p class="questionsmark"> <img src={question_circle} alt="Question Mark"> Find out why you only add 5 files per claim area in our <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>help article</u></a> .</p> -->
+												<p class="questionsmark"> <img src={question_circle} alt="Question Mark"> View our help article <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>here</u></a>.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</template>
+				
+						<template if:true={desptItems.Damage}>
+							<div class="tab-pane fade show active" role="tabpanel" aria-labelledby="sf-deposit-tab">
+				
+								<div class="list-of-btns" data-id="scroll-to-top">
+									<div class="container">
+										<h2>Submit evidence</h2>
+										<a class="go-back" onclick={goToPreviousItem}><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+										<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+									</div>
+								</div>
+				
+								<div class="deposit-agent">
+									<div class="container">
+										<div class="row">
+											<div class="col-md-9">
+												<section class="deposit_steps">
+													<div class="deposit_steps_count">
+														<div class="state-indicator">
+																<span class="circle">1</span>
+																<p>Key documents</p>
+														</div>
+														<div class="state-indicator active">
+																<span class="circle">2</span>
+																<p>Claim breakdown</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">3</span>
+																<p>Additional comments</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">4</span>
+																<p>Review submission</p>
+														</div>
+													</div>
+				
+													<div class="deposit_steps_detail">
+														<h6 class="text-center">You have until {ClaimsDetails.respondDate} to submit details of your case and your evidence.</h6>
+														
+														<!-- <form> -->
+				
+																<h6 class="mt-5">Your claim for damage</h6>
+				
+																<div class="row">
+																	<div class="col-lg-12 col-md-12">
+																		<div class="agree-container">
+																				<div class="agree-detail" style="display: block;">
+																					<div class="form-group row">
+																						<div class="col-sm-4">
+																								<div class="request-section">
+																									<label>Requested by you</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.requestedByAGLL}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="response-section">
+																									<label>Agreed by tenant(s)</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.agreedbyTenant}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="dispute-section dispute_EW">
+																									<label>Amount in dispute</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.amountInDispute}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																					</div>
+																				</div>
+																		</div>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<p style="color:red;margin-left: 15px;">Please note, to save the information you add <u> you must click the 'Continue' button </u> at the bottom of the page. </p>
+																	<p style="color:red;margin-left: 15px;">If you leave this page without clicking ‘Continue’, the information added to this screen will not be saved. You can click continue and come back to this screen to add information at any time before your deadline expires. </p>
+																	<label class="col-sm-4 col-form-label">Please describe your claim for damage and set out each damage claim separately by room
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">If your claim relates to more than one room, you will need to set out your claim room by room.</p>
+																	</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Claim_description_for_damage_agll__c" value={desptItems.Claim_description_for_damage_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Claim_description_for_damage_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What clause(s) in the tenancy agreement support your claim for damage?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 2 of the tenancy agreement under clause 11.3. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_clause_damage_agll__c" value={desptItems.Supporting_clause_damage_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_clause_damage_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of the property's condition at the start of the tenancy?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 6 of the check in report under the heading 'Kitchen'. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Evidence_at_tenancystart_damage_agll__c" value={desptItems.Evidence_at_tenancystart_damage_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Evidence_at_tenancystart_damage_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of the property's condition at the end of the tenancy? 
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 12 of the check out report under the heading 'Bedroom 1'. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Evidence_at_tenancy_end_for_damage_agll__c" value={desptItems.Evidence_at_tenancy_end_for_damage_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Evidence_at_tenancy_end_for_damage_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What evidence supports the value of the claim you are making?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">The invoice must clearly list each of the areas highlighted as damage claims above.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_evidence_for_damage_agll__c" value={desptItems.Supporting_evidence_for_damage_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_evidence_for_damage_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">Please upload evidence relating to your damage claim</label>
+																</div>
+				
+																<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																	oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																	record-id={ClaimsDetails.Id} 
+																	evidance-attachment={evidenceAttachments}
+																	evidence-categories="Damage"
+																	dispute-id={desptItems.Id}
+																	user-type={ClaimsDetails.Dispute_Responded_By__c}
+																	source="Dispute Response" scheme="EWI" >
+																</c-e-i_-e-w-i_file-upload>
+
+																<div class="form-check">
+																	<template if:true={showDisputeItemError}>
+																		 <p class="error-msg text-right">
+																			 <!-- Please respond all the required fields. -->
+																			  {allFieldsRequiredErrorMsg}
+																		 </p>
+																	</template>
+																	<br/>
+																</div>
+				
+																<div class="form-group row">
+																	<div class="col-sm-12 col-lg-12 text-right">
+																		<button type="submit" class="see-all blue_theme" onclick={goToNextItem}>Continue</button>
+																	</div>
+																</div>
+														<!-- </form> -->
+				
+													</div>
+												</section>
+											</div>
+											<div class="col-md-3 info-right-tab">
+												<p>In this section, you should add information relevant to this area of your claim. Examples of useful information include photographs, invoices, correspondence or contractors' reports. </p>
+												<p>The following file types are supported: </p>
+												<p>.csv .doc .docx .pdf .ppsx .ppt .pptx .rtf .txt .xls .xlsx .odt .bmp .jpg .jpeg .png .tif .tiff .mp3 .wav .mov .mpeg .mpg .zip</p>
+												<p>If you provide a photograph, you will be asked to label it clearly. </p>
+												<p>If you are able to break down each claim to provide more detail it will help the adjudicator understand more about the sum you are claiming. When answering the questions, please refer to all of your evidence, including the tenancy agreement, inventory/check-in and check-out information to demonstrate how your evidence supports the claim you are making. </p>
+												<p>The adjudicator will not construct the claim for you from the evidence you provide so you should point out clearly how the evidence you have provided supports each element of your claim. </p>
+												<p>If you are having difficulty providing evidence or answering the questions, you can return and complete or add to your submission before {ClaimsDetails.respondDate}. If you do not have relevant evidence, you may wish to consider cancelling the dispute. If you do so, the outstanding deposit will be due back to the tenant(s).</p>
+												<p>The size limit for any individual file is 20mb. You may add up to 10 files for cleaning and 5 files for damage, redecoration and gardening, in addition to the key documents previously added.</p>
+													<!-- You may add up to 5 files for each claim type, in addition to the key documents previously added.</p> -->
+												<!-- <p class="questionsmark"> <img src={question_circle} alt="Question Mark"> Find out why you only add 5 files per claim area in our <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>help article</u></a>.</p> -->
+												<p class="questionsmark"> <img src={question_circle} alt="Question Mark"> View our help article <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>here</u></a>.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</template>	
+				
+						<template if:true={desptItems.Redecoration}>
+							<div class="tab-pane fade show active" role="tabpanel" aria-labelledby="sf-deposit-tab">
+				
+								<div class="list-of-btns" data-id="scroll-to-top">
+									<div class="container">
+										<h2>Submit evidence</h2>
+										<a class="go-back" onclick={goToPreviousItem}><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+										<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+									</div>
+								</div>
+				
+								<div class="deposit-agent">
+									<div class="container">
+										<div class="row">
+											<div class="col-md-9">
+												<section class="deposit_steps">
+													<div class="deposit_steps_count">
+														<div class="state-indicator">
+																<span class="circle">1</span>
+																<p>Key documents</p>
+														</div>
+														<div class="state-indicator active">
+																<span class="circle">2</span>
+																<p>Claim breakdown</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">3</span>
+																<p>Additional comments</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">4</span>
+																<p>Review submission</p>
+														</div>
+													</div>
+				
+													<div class="deposit_steps_detail">
+														<h6 class="text-center">You have until {ClaimsDetails.respondDate} to submit details of your case and your evidence.</h6>
+														
+														<!-- <form> -->
+				
+																<h6 class="mt-5">Your claim for redecoration</h6>
+				
+																<div class="row">
+																	<div class="col-lg-12 col-md-12">
+																		<div class="agree-container">
+																				<div class="agree-detail" style="display: block;">
+																					<div class="form-group row">
+																						<div class="col-sm-4">
+																								<div class="request-section">
+																									<label>Requested by you</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.requestedByAGLL}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="response-section">
+																									<label>Agreed by tenant(s)</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.agreedbyTenant}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="dispute-section dispute_EW">
+																									<label>Amount in dispute</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.amountInDispute}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																					</div>
+																				</div>
+																		</div>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<p style="color:red;margin-left: 15px;">Please note, to save the information you add <u> you must click the 'Continue' button </u> at the bottom of the page. </p>
+																	<p style="color:red;margin-left: 15px;">If you leave this page without clicking ‘Continue’, the information added to this screen will not be saved. You can click continue and come back to this screen to add information at any time before your deadline expires. </p>
+																	<label class="col-sm-4 col-form-label">Please describe your claim for redecoration and set out each redecoration claim separately by room
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">If your claim relates to more than one room, you will need to set out your claim room by room.</p>
+																	</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Claim_description_for_redecoration_agll__c" value={desptItems.Claim_description_for_redecoration_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Claim_description_for_redecoration_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What clause(s) in the tenancy agreement support your claim for redecoration? 
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 2 of the tenancy agreement under clause 11.3. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_clause_redecoration_agll__c" value={desptItems.Supporting_clause_redecoration_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_clause_redecoration_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of the standard of decoration at the start of the tenancy?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 6 of the check in report under the heading 'Kitchen'. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Evidence_at_tenancystart_redecoration_ag__c" value={desptItems.Evidence_at_tenancystart_redecoration_ag__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Evidence_at_tenancystart_redecoration_ag__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of the standard of decoration at the end of the tenancy?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 12 of the check out report under the heading 'Bedroom 1'. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Evidence_at_tenancyend_redecoration_agll__c" value={desptItems.Evidence_at_tenancyend_redecoration_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Evidence_at_tenancyend_redecoration_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What evidence supports the value of the claim you are making?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">The invoice must clearly list each of the areas highlighted as redecoration claims above.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_evidence_for_redecoration_agl__c" value={desptItems.Supporting_evidence_for_redecoration_agl__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_evidence_for_redecoration_agl__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">Please upload evidence relating to your redecoration claim</label>
+																</div>
+				
+																<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																	oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																	record-id={ClaimsDetails.Id} 
+																	evidance-attachment={evidenceAttachments}
+																	evidence-categories="Redecoration"
+																	dispute-id={desptItems.Id}
+																	user-type={ClaimsDetails.Dispute_Responded_By__c}
+																	source="Dispute Response" scheme="EWI" >
+																</c-e-i_-e-w-i_file-upload>
+
+																<div class="form-check">
+																	<template if:true={showDisputeItemError}>
+																		 <p class="error-msg text-right">
+																			 <!-- Please respond all the required fields. -->
+																			  {allFieldsRequiredErrorMsg}
+																		 </p>
+																	</template>
+																	<br/>
+																</div>
+				
+																<div class="form-group row">
+																	<div class="col-sm-12 col-lg-12 text-right">
+																		<button type="submit" class="see-all blue_theme" onclick={goToNextItem}>Continue</button>
+																	</div>
+																</div>
+														<!-- </form> -->
+				
+													</div>
+												</section>
+											</div>
+											<div class="col-md-3 info-right-tab">
+												<p>In this section, you should add information relevant to this area of your claim. Examples of useful information include photographs, invoices, correspondence or contractors' reports. </p>
+												<p>The following file types are supported: </p>
+												<p>.csv .doc .docx .pdf .ppsx .ppt .pptx .rtf .txt .xls .xlsx .odt .bmp .jpg .jpeg .png .tif .tiff .mp3 .wav .mov .mpeg .mpg .zip</p>
+												<p>If you provide a photograph, you will be asked to label it clearly. </p>
+												<p>If you are able to break down each claim to provide more detail it will help the adjudicator understand more about the sum you are claiming. When answering the questions, please refer to all of your evidence, including the tenancy agreement, inventory/check-in and check-out information to demonstrate how your evidence supports the claim you are making. </p>
+												<p>The adjudicator will not construct the claim for you from the evidence you provide so you should point out clearly how the evidence you have provided supports each element of your claim. </p>
+												<p>If you are having difficulty providing evidence or answering the questions, you can return and complete or add to your submission before {ClaimsDetails.respondDate}. If you do not have relevant evidence, you may wish to consider cancelling the dispute. If you do so, the outstanding deposit will be due back to the tenant(s).</p>
+												<p>The size limit for any individual file is 20mb. You may add up to 10 files for cleaning and 5 files for damage, redecoration and gardening, in addition to the key documents previously added.</p>
+													<!-- You may add up to 5 files for each claim type, in addition to the key documents previously added.</p> -->
+												<!-- <p class="questionsmark"> <img src={question_circle} alt="Question Mark"> Find out why you only add 5 files per claim area in our <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>help article</u></a>.</p> -->
+												<p class="questionsmark"> <img src={question_circle} alt="Question Mark"> View our help article <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>here</u></a>.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</template>
+				
+						<template if:true={desptItems.Gardening}>
+							<div class="tab-pane fade show active" role="tabpanel" aria-labelledby="sf-deposit-tab">
+				
+								<div class="list-of-btns" data-id="scroll-to-top">
+									<div class="container">
+										<h2>Submit evidence</h2>
+										<a class="go-back" onclick={goToPreviousItem}><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+										<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+									</div>
+								</div>
+				
+								<div class="deposit-agent">
+									<div class="container">
+										<div class="row">
+											<div class="col-md-9">
+												<section class="deposit_steps">
+													<div class="deposit_steps_count">
+														<div class="state-indicator">
+																<span class="circle">1</span>
+																<p>Key documents</p>
+														</div>
+														<div class="state-indicator active">
+																<span class="circle">2</span>
+																<p>Claim breakdown</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">3</span>
+																<p>Additional comments</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">4</span>
+																<p>Review submission</p>
+														</div>
+													</div>
+				
+													<div class="deposit_steps_detail">
+														<h6 class="text-center">You have until {ClaimsDetails.respondDate} to submit details of your case and your evidence.</h6>
+														
+														<!-- <form> -->
+				
+																<h6 class="mt-5">Your claim for gardening</h6>
+				
+																<div class="row">
+																	<div class="col-lg-12 col-md-12">
+																		<div class="agree-container">
+																				<div class="agree-detail" style="display: block;">
+																					<div class="form-group row">
+																						<div class="col-sm-4">
+																								<div class="request-section">
+																									<label>Requested by you</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.requestedByAGLL}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="response-section">
+																									<label>Agreed by tenant(s)</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.agreedbyTenant}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="dispute-section dispute_EW">
+																									<label>Amount in dispute</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.amountInDispute}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																					</div>
+																				</div>
+																		</div>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<p style="color:red;margin-left: 15px;">Please note, to save the information you add <u> you must click the 'Continue' button </u> at the bottom of the page. </p>
+																	<p style="color:red;margin-left: 15px;">If you leave this page without clicking ‘Continue’, the information added to this screen will not be saved. You can click continue and come back to this screen to add information at any time before your deadline expires. </p>
+																	<label class="col-sm-4 col-form-label">Please describe your claim for gardening and set out each gardening claim separately
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">If your claim relates to more than one item of gardening, you will need to set out your claim item by item.</p>
+																	</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Claim_description_for_gardening_agll__c" value={desptItems.Claim_description_for_gardening_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Claim_description_for_gardening_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What clause(s) in the tenancy agreement support your claim for gardening?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 2 of the tenancy agreement under clause 11.3. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_clause_gardening_agll__c" value={desptItems.Supporting_clause_gardening_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_clause_gardening_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of the garden's condition at the start of the tenancy?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 6 of the check in report under the heading 'Kitchen'. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Evidence_at_tenancystart_gardening_agll__c" value={desptItems.Evidence_at_tenancystart_gardening_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Evidence_at_tenancystart_gardening_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of the garden's condition at the end of the tenancy?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 12 of the check out report under the heading 'Bedroom 1'. If you are making multiple claims, each one must be referenced.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Evidence_at_tenancyend_gardening_agll__c" value={desptItems.Evidence_at_tenancyend_gardening_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Evidence_at_tenancyend_gardening_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What evidence supports the value of the claim you are making?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">The invoice must clearly list each of the areas highlighted as gardening claims above.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_evidence_for_gardening__c" value={desptItems.Supporting_evidence_for_gardening__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_evidence_for_gardening__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">Please upload evidence relating to your gardening claim</label>
+																</div>
+				
+																<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																	oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																	record-id={ClaimsDetails.Id} 
+																	evidance-attachment={evidenceAttachments}
+																	evidence-categories="Gardening"
+																	dispute-id={desptItems.Id}
+																	user-type={ClaimsDetails.Dispute_Responded_By__c}
+																	source="Dispute Response" scheme="EWI" >
+																</c-e-i_-e-w-i_file-upload>
+
+																<div class="form-check">
+																	<template if:true={showDisputeItemError}>
+																		 <p class="error-msg text-right">
+																			 <!-- Please respond all the required fields. -->
+																			  {allFieldsRequiredErrorMsg}
+																		 </p>
+																	</template>
+																	<br/>
+																</div>
+				
+																<div class="form-group row">
+																	<div class="col-sm-12 col-lg-12 text-right">
+																		<button type="submit" class="see-all blue_theme" onclick={goToNextItem}>Continue</button>
+																	</div>
+																</div>
+														<!-- </form> -->
+				
+													</div>
+												</section>
+											</div>
+											<div class="col-md-3 info-right-tab">
+													<p>In this section, you should add information relevant to this area of your claim. Examples of useful information include photographs, invoices, correspondence or contractors' reports. </p>
+													<p>The following file types are supported: </p>
+													<p>.csv .doc .docx .pdf .ppsx .ppt .pptx .rtf .txt .xls .xlsx .odt .bmp .jpg .jpeg .png .tif .tiff .mp3 .wav .mov .mpeg .mpg .zip</p>
+													<p>If you provide a photograph, you will be asked to label it clearly. </p>
+													<p>If you are able to break down each claim to provide more detail it will help the adjudicator understand more about the sum you are claiming. When answering the questions, please refer to all of your evidence, including the tenancy agreement, inventory/check-in and check-out information to demonstrate how your evidence supports the claim you are making. </p>
+													<p>The adjudicator will not construct the claim for you from the evidence you provide so you should point out clearly how the evidence you have provided supports each element of your claim. </p>
+													<p>If you are having difficulty providing evidence or answering the questions, you can return and complete or add to your submission before {ClaimsDetails.respondDate}. If you do not have relevant evidence, you may wish to consider cancelling the dispute. If you do so, the outstanding deposit will be due back to the tenant(s).</p>
+													<p>The size limit for any individual file is 20mb. You may add up to 10 files for cleaning and 5 files for damage, redecoration and gardening, in addition to the key documents previously added.</p>
+														<!-- You may add up to 5 files for each claim type, in addition to the key documents previously added.</p> -->
+													<!-- <p class="questionsmark"> <img src={question_circle} alt="Question Mark"> Find out why you only add 5 files per claim area in our <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>help article</u></a>.</p> -->
+												<p class="questionsmark"> <img src={question_circle} alt="Question Mark"> View our help article <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>here</u></a>.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</template>
+				
+						<template if:true={desptItems.Rent}>
+							<div class="tab-pane fade show active" role="tabpanel" aria-labelledby="sf-deposit-tab">
+				
+								<div class="list-of-btns" data-id="scroll-to-top">
+									<div class="container">
+										<h2>Submit evidence</h2>
+										<a class="go-back" onclick={goToPreviousItem}><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+										<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+									</div>
+								</div>
+				
+								<div class="deposit-agent">
+									<div class="container">
+										<div class="row">
+											<div class="col-md-9">
+												<section class="deposit_steps">
+													<div class="deposit_steps_count">
+														<div class="state-indicator">
+																<span class="circle">1</span>
+																<p>Key documents</p>
+														</div>
+														<div class="state-indicator active">
+																<span class="circle">2</span>
+																<p>Claim breakdown</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">3</span>
+																<p>Additional comments</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">4</span>
+																<p>Review submission</p>
+														</div>
+													</div>
+				
+													<div class="deposit_steps_detail">
+														<h6 class="text-center">You have until {ClaimsDetails.respondDate} to submit details of your case and your evidence.</h6>
+														
+														<!-- <form> -->
+				
+																<h6 class="mt-5">Your claim for rent arrears</h6>
+				
+																<div class="row">
+																	<div class="col-lg-12 col-md-12">
+																		<div class="agree-container">
+																				<div class="agree-detail" style="display: block;">
+																					<div class="form-group row">
+																						<div class="col-sm-4">
+																								<div class="request-section">
+																									<label>Requested by you</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.requestedByAGLL}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="response-section">
+																									<label>Agreed by tenant(s)</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.agreedbyTenant}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="dispute-section dispute_EW">
+																									<label>Amount in dispute</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.amountInDispute}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																					</div>
+																				</div>
+																		</div>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<p style="color:red;margin-left: 15px;">Please note, to save the information you add <u> you must click the 'Continue' button </u> at the bottom of the page. </p>
+																	<p style="color:red;margin-left: 15px;">If you leave this page without clicking ‘Continue’, the information added to this screen will not be saved. You can click continue and come back to this screen to add information at any time before your deadline expires. </p>
+																	<label class="col-sm-4 col-form-label">How much are the arrears and how did they arise?</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Rent_arrears_description_agll__c" value={desptItems.Rent_arrears_description_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Rent_arrears_description_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">Was the property re-let during the period being claimed for and if so, when?</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Was_the_property_re_let_rent_agll__c" value={desptItems.Was_the_property_re_let_rent_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Was_the_property_re_let_rent_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What clause(s) in the tenancy agreement support your claim for rent arrears?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 2 of the tenancy agreement under clause 11.3.</p></label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_clause_rent_agll__c" value={desptItems.Supporting_clause_rent_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_clause_rent_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What is your evidence of rent arrears?</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_evidence_for_rent_agll__c" value={desptItems.Supporting_evidence_for_rent_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_evidence_for_rent_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">Please upload evidence relating to your rent arrears claim</label>
+																</div>
+				
+																<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																	oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																	record-id={ClaimsDetails.Id} 
+																	evidance-attachment={evidenceAttachments}
+																	evidence-categories="Rent"
+																	dispute-id={desptItems.Id}
+																	user-type={ClaimsDetails.Dispute_Responded_By__c}
+																	source="Dispute Response" scheme="EWI" >
+																</c-e-i_-e-w-i_file-upload>
+
+																<div class="form-check">
+																	<template if:true={showDisputeItemError}>
+																		 <p class="error-msg text-right">
+																			 <!-- Please respond all the required fields. -->
+																			  {allFieldsRequiredErrorMsg}
+																		 </p>
+																	</template>
+																	<br/>
+																</div>
+				
+																<div class="form-group row">
+																	<div class="col-sm-12 col-lg-12 text-right">
+																		<button type="submit" class="see-all blue_theme" onclick={goToNextItem}>Continue</button>
+																	</div>
+																</div>
+														<!-- </form> -->
+				
+													</div>
+												</section>
+											</div>
+											<div class="col-md-3 info-right-tab">
+													<p>In this section, you should add information relevant to this area of your claim. </p>
+													<p>The adjudicator needs to understand the periods during the tenancy when the tenant(s) failed to pay the full rent under the tenancy agreement, and how much was outstanding at the end of the tenancy. Your rent statement should show this information. </p>
+													<p>The following file types are supported: </p>
+													<p>.csv .doc .docx .pdf .ppsx .ppt .pptx .rtf .txt .xls .xlsx .odt .bmp .jpg .jpeg .png .tif .tiff .mp3 .wav .mov .mpeg .mpg .zip</p>
+													<p>The adjudicator will not construct the claim for you from the evidence you provide so you should point out clearly how the evidence you have provided supports each element of your claim. </p>
+													<p>If you are having difficulty providing evidence or answering the questions, you can return and complete or add to your submission before {ClaimsDetails.respondDate}. If you do not have relevant evidence, you may wish to consider cancelling the dispute. If you do so, the outstanding deposit will be due back to the tenant(s).</p>
+													<p>The size limit for any individual file is 20mb. You may add up to 10 files for cleaning and 5 files for damage, redecoration and gardening, in addition to the key documents previously added.</p>
+														<!-- You may add up to 5 files for each claim type, in addition to the key documents previously added.</p> -->
+													<!-- <p class="questionsmark"> <img src={question_circle} alt="Question Mark"> Find out why you only add 5 files per claim area in our <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>help article</u></a>.</p> -->
+												<p class="questionsmark"> <img src={question_circle} alt="Question Mark"> View our help article <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>here</u></a>.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</template>
+				
+						<template if:true={desptItems.Other}>
+							<div class="tab-pane fade show active" role="tabpanel" aria-labelledby="sf-deposit-tab">
+				
+								<div class="list-of-btns" data-id="scroll-to-top">
+									<div class="container">
+										<h2>Submit evidence</h2>
+										<a class="go-back" onclick={goToPreviousItem}><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+										<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+									</div>
+								</div>
+				
+								<div class="deposit-agent">
+									<div class="container">
+										
+										<div class="row">
+											<div class="col-md-9">
+												<section class="deposit_steps">
+													<div class="deposit_steps_count">
+														<div class="state-indicator">
+																<span class="circle">1</span>
+																<p>Key documents</p>
+														</div>
+														<div class="state-indicator active">
+																<span class="circle">2</span>
+																<p>Claim breakdown</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">3</span>
+																<p>Additional comments</p>
+														</div>
+														<div class="state-indicator">
+																<span class="circle">4</span>
+																<p>Review submission</p>
+														</div>
+													</div>
+				
+													<div class="deposit_steps_detail">
+														<h6 class="text-center">You have until {ClaimsDetails.respondDate} to submit details of your case and your evidence.</h6>
+														
+														<!-- <form> -->
+				
+																<h6 class="mt-5">Your claim for other</h6>
+																
+																<div class="row">
+																	<div class="col-lg-12 col-md-12">
+																		<div class="agree-container">
+																				<div class="agree-detail" style="display: block;">
+																					<div class="form-group row">
+																						<div class="col-sm-4">
+																								<div class="request-section">
+																									<label>Requested by you</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.requestedByAGLL}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="response-section">
+																									<label>Agreed by tenant(s)</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.agreedbyTenant}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																						<div class="col-sm-4">
+																								<div class="dispute-section dispute_EW">
+																									<label>Amount in dispute</label>
+				
+																									<div class="form-group">
+																										<lightning-input type="number"
+																											title={index} value={desptItems.amountInDispute}
+																											disabled="true"
+																											formatter="currency" step="0.01"
+																											placeholder="£0.00">
+																										</lightning-input>
+																									</div>
+																								</div>
+																						</div>
+																					</div>
+																				</div>
+																		</div>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<p style="color:red;margin-left: 15px;">Please note, to save the information you add <u> you must click the 'Continue' button </u> at the bottom of the page. </p>
+																	<p style="color:red;margin-left: 15px;">If you leave this page without clicking ‘Continue’, the information added to this screen will not be saved. You can click continue and come back to this screen to add information at any time before your deadline expires. </p>
+																	<label class="col-sm-4 col-form-label">Please provide a breakdown of your other claims
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">If your claim relates to more than one item, you will need to set out your claim item by item.</p>
+																	</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Claim_breakdown_other_AGLL__c" value={desptItems.Claim_breakdown_other_AGLL__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Claim_breakdown_other_AGLL__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">What clause(s) in the tenancy agreement support your claim?
+																		<p style="color: #9c9c9c; font-size: 1.2rem;">You need to point the adjudicator to exactly where the evidence is in the information provided. For example, page 2 of the tenancy agreement under clause 11.3.</p>
+																	</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_clause_other_agll__c" value={desptItems.Supporting_clause_other_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_clause_other_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">How does any evidence you supply support your claim?</label>
+																	<div class="col-sm-8">
+																		<lightning-textarea rows="4" class="text_mt" name="Supporting_evidence_for_other_agll__c" value={desptItems.Supporting_evidence_for_other_agll__c} onchange={handleDisputeItemValueChange} placeholder=""></lightning-textarea>
+																		<template if:true={desptItems.Supporting_evidence_for_other_agll__c_length}>
+																			<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+																		</template>
+																	</div>
+																</div>
+				
+																<div class="form-group row">
+																	<label class="col-sm-4 col-form-label">Please upload evidence relating to your Other claim</label>
+																</div>
+				
+																<c-e-i_-e-w-i_file-upload is-disable={isDisable}
+																	oneditevidenceattachmentlist={handleChangeEviAttachmentList}
+																	record-id={ClaimsDetails.Id} 
+																	evidance-attachment={evidenceAttachments}
+																	evidence-categories="Other"
+																	dispute-id={desptItems.Id}
+																	user-type={ClaimsDetails.Dispute_Responded_By__c}
+																	source="Dispute Response" scheme="EWI" >
+																</c-e-i_-e-w-i_file-upload>
+
+																<div class="form-check">
+																	<template if:true={showDisputeItemError}>
+																		 <p class="error-msg text-right">
+																			 <!-- Please respond all the required fields. -->
+																			  {allFieldsRequiredErrorMsg}
+																		 </p>
+																	</template>
+																	<br/>
+																</div>
+				
+																<div class="form-group row">
+																	<div class="col-sm-12 col-lg-12 text-right">
+																		<button type="submit" class="see-all blue_theme" onclick={goToNextItem}>Continue</button>
+																	</div>
+																</div>
+															
+														<!-- </form> -->
+				
+													</div>
+												</section>
+											</div>
+											
+											<div class="col-md-3 info-right-tab">
+													<p>In this section, you should add information relevant to this area of your claim.</p>
+													<p>The following file types are supported: </p>
+													<p>.csv .doc .docx .pdf .ppsx .ppt .pptx .rtf .txt .xls .xlsx .odt .bmp .jpg .jpeg .png .tif .tiff .mp3 .wav .mov .mpeg .mpg .zip</p>
+													<p>The adjudicator will not construct the claim for you from the evidence you provide so you should point out clearly how the evidence you have provided supports each element of your claim. </p>
+													<p>If you are having difficulty providing evidence or answering the questions, you can return and complete or add to your submission before {ClaimsDetails.respondDate}. If you do not have relevant evidence, you may wish to consider cancelling the dispute. If you do so, the outstanding deposit will be due back to the tenant(s).</p>
+													<p>The size limit for any individual file is 20mb. You may add up to 10 files for cleaning and 5 files for damage, redecoration and gardening, in addition to the key documents previously added.</p>
+														<!-- You may add up to 5 files for each claim type, in addition to the key documents previously added.</p> -->
+													<!-- <p class="questionsmark"> <img src={question_circle} alt="Question Mark"> Find out why you only add 5 files per claim area in our <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>help article</u></a>.</p> -->
+												<p class="questionsmark"> <img src={question_circle} alt="Question Mark"> View our help article <a style="color:#4D4C4C;" onclick={getHelpArticleDocument}><u>here</u></a>.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</template>
+						
+					</template>
+				</div>
+			</template>
+		</template>
+
+		<template if:true={showAdditionalComments}>
+			<div class="tab-pane fade show active" id="sf-deposit9" role="tabpanel" aria-labelledby="sf-deposit-tab">
+
+				<div class="list-of-btns" data-id="scroll-to-top">
+					<div class="container">
+						<h2>Submit evidence</h2>
+						<a class="go-back" onclick={handleGoBackStep} title="claimBreakdown"><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+						<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+					</div>
+				</div>
+
+				<div class="deposit-agent">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-9">
+								<section class="deposit_steps">
+									<div class="deposit_steps_count">
+										<div class="state-indicator">
+											<span class="circle">1</span>
+											<p>Key documents</p>
+										</div>
+										<div class="state-indicator">
+											<span class="circle">2</span>
+											<p>Claim breakdown</p>
+										</div>
+										<div class="state-indicator active">
+											<span class="circle">3</span>
+											<p>Additional comments</p>
+										</div>
+										<div class="state-indicator">
+											<span class="circle">4</span>
+											<p>Review submission</p>
+										</div>
+									</div>
+
+									<div class="deposit_steps_detail">
+										<!-- <form> -->
+											<div class="form-group row">
+												<label class="col-sm-4 col-form-label">If you have any additional comments to make in support of your claim, please do so here</label>
+												<div class="col-sm-8">
+													<lightning-textarea rows="4" class="text_mt" name="Additional_comments_AGLL__c" value={ClaimsDetails.Additional_comments_AGLL__c} onchange={handleAdditionalCommentValuesChange} placeholder=""></lightning-textarea>
+													<template if:true={ClaimsDetails.Additional_comments_AGLL__c_length}>
+														<p style="color:red">You are unable to enter more than 2000 characters in this field.</p>
+													</template>
+												</div>
+											</div>
+
+											<div class="form-group row">
+												<div class="col-sm-12 col-lg-12 text-right">
+													<button type="submit" class="see-all blue_theme" onclick={handlegotoshowReviewsubmission}>Continue</button>
+												</div>
+											</div>
+										<!-- </form> -->
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+				</div>
+		  	</div>
+		</template>
+
+		<template if:true={showReviewsubmission}>
+			<div class="tab-pane fade show active" id="sf-deposit10" role="tabpanel" aria-labelledby="sf-deposit-tab">
+
+				<div class="list-of-btns" data-id="scroll-to-top">
+					<div class="container">
+						<h2>Submit evidence</h2>
+						<a class="go-back" onclick={handleGoBackStep} title="additionalComments"><img src={ew_arrow_dropleft} alt="Back Icon"> Go back</a>
+						<a class="see-all blue_theme" onclick={handlegotoshowCancelDispute}>Cancel dispute</a>
+					</div>
+				</div>
+
+				<div class="deposit-agent">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-9">	
+								<section class="deposit_steps">
+									<div class="deposit_steps_count">
+										<div class="state-indicator">
+												<span class="circle">1</span>
+												<p>Key documents</p>
+										</div>
+										<div class="state-indicator">
+												<span class="circle">2</span>
+												<p>Claim breakdown</p>
+										</div>
+										<div class="state-indicator">
+												<span class="circle">3</span>
+												<p>Additional comments</p>
+										</div>
+										<div class="state-indicator active">
+												<span class="circle">4</span>
+												<p>Review submission</p>
+										</div>
+									</div>
+
+									<div class="deposit_steps_detail">
+										<!-- <form> -->
+												<div class="form-group">
+													<p class="text-center">Everything you added in the previous steps has been saved and you may safely leave this page. You may return to review or amend your submission until <strong>{ClaimsDetails.respondDate}</strong>.</p>
+												</div>
+
+												<div class="form-group">
+													<p class="text-center">The tenant(s) cannot see your submission until after <strong>{ClaimsDetails.respondDate}</strong>.</p>
+												</div>
+
+												<div class="form-group">
+													<p class="text-center">You will not be able to amend your evidence after <strong>{ClaimsDetails.respondDate}</strong>. After <strong>{ClaimsDetails.respondDate}</strong> we will invite the tenant(s) to view your submission make a submission of their own within a further 10 working days.</p>
+												</div>
+
+												<div class="form-group">
+													<p class="text-center">After the tenant's deadline has passed, the case will be reviewed and progressed to an adjudicator who will make a decision usually within a further 28 calendar days. You will be able to view the tenant's submission after their deadline has passed, but will not be able to comment on it.</p>
+												</div>
+
+												<div class="form-group">
+													<p class="text-center">You can cancel your dispute at any time during these stages by selecting 'Cancel dispute' at the top of this page. If you did this, you must return the remaining deposit to the tenant(s).</p>
+												</div>
+
+												<div class="form-group row">
+													<div class="col-sm-12 col-lg-12 text-right">
+														<a class="see-all blue_theme" onclick={handlegotoDepositSummary}> Go to deposit summary</a>
+														<!-- <button type="submit" class="see-all blue_theme" onclick={handlegotoDepositSummary}>Go to deposit summary</button> -->
+													</div>
+												</div>
+										<!-- </form> -->
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+				</div>
+		  	</div>
+		</template>
+
+		<template if:true={showCancelDispute}>
+			<div class="tab-pane fade show active" id="sf-deposit11" role="tabpanel" aria-labelledby="sf-deposit-tab">
+				<div class="deposit-agent">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-9">
+								<section class="deposit_steps">
+									<h4>Cancel dispute</h4>
+									<div class="deposit_steps_detail">
+										<div class="claim-summary_gray-panel sds_panel">
+												<p><strong>Please click 'Confirm' if you want to cancel the dispute.</strong></p>
+
+												<template if:true={isHoldingDisputedFunds}>
+													<p><strong>If you confirm, we will release the disputed amount in full to the tenant(s) and close the case.</strong></p>
+												</template>
+												<template if:false={isHoldingDisputedFunds}>
+													<p><strong>If you confirm, we will advise the tenant(s) to expect repayment from you within 5 working days in accordance with the rules of the scheme.</strong></p>
+												</template>
+
+												<p><strong>If you do not want to cancel the dispute, press 'Go back'.</strong></p>
+												<div class="text-right mt-5">
+													<a class="go-back" onclick={handleBackFromCancelDispute}><img src={md_arrow_dropleft} alt="Back Icon"> Go back</a>
+													<button class="go-back ml-3" onclick={handleConfirmCancelDispute}>Confirm</button>
+											</div>
+										</div>
+									</div>
+								</section>
+							</div>
+						</div>
+					</div>
+				</div>
+		  </div>
+		</template>
+	</template>
+	</div>
+</template>
+</template>
