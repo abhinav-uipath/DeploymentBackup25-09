@@ -1,0 +1,378 @@
+<template>
+    <template if:true ={showDetails}> 
+    <div class="tab-content custom-tab-content" id="sf-tabContent">
+            
+        <div class="tab-pane fade show active" id="sf-deposit" role="tabpanel" aria-labelledby="sf-deposit-tab">
+            <template if:false={isShowThankyouPage}>
+                <div class="deposit-agent">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <template if:true={isDepoAllocProposal}>
+                                
+                                    <h5 class="deposit-text">Deposit allocation proposal</h5>
+
+                                    <a class="go-back" onclick={handleGoBack}><img src={ew_arrow_dropleft} alt="Back"> Go back</a>
+
+                                    <!-- Deposit Steps HTML Start -->
+                                    <section class="deposit_steps tf-other-prop">
+                                        
+                                            <div class="deposit_steps_detail">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-md-12 col-lg-11">
+                                                        <div class="deposit_box_container">
+                                                            <div class="deposit_box ">
+                                                                <div>
+                                                                    <h5 class="text-secondary">Tenancy end date</h5>
+                                                                    <template if:true={formattedEndDate}>
+                                                                    <h6>{formattedEndDate}</h6>
+                                                                    </template> 
+                                                                </div>
+                                                                <img src={home_icon} alt="">
+                                                            </div>
+                                                            <div class="deposit_box bg-gay-light">
+                                                                <div>
+                                                                    <h5 class="text-secondary">Deposit amount</h5>
+                                                                    <template if:true={caseDetails}>
+                                                                    <h6><lightning-formatted-number value={depositAmount} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></h6>
+                                                                    </template>
+                                                                </div>
+                                                                <img src={pound_icon} alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <template if:true={showAddressFlag}>
+                                                    <c-e-i_-e-w-i_forwarding-Address allocation-list={blankAllocationList} tenant-name={tenantName} onhidecmp={handleHideForwardingAddress}></c-e-i_-e-w-i_forwarding-Address>
+                                                </template>
+
+                                                <template if:false={showAddressFlag}>
+                                                    <form>
+                                                        <div class="form-group row">
+                                                            <div class="col-sm-12 col-md-6 col-lg-8">
+                                                                <label>Do you want to make deductions from the deposit?</label>
+                                                                <div class="col-sm-12 col-md-6 col-lg-8" style="margin-left: 60px;">
+                                                                    <a id="property_yes" class="learn-more mr-3 amt-recv-yes-btn" style="min-width:25%;" onclick={handleAmountReceivedYES}>Yes</a>
+                                                                    <a id="property_no" class="learn-more amt-recv-no-btn" style="min-width:25%;" onclick={handleAmountReceivedNO}>No</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <template if:true={isAmountReceivedNO}>
+                                                                <div class="col-sm-12 col-lg-8">
+                                                                    <p class="text-center">This deposit has been protected under our Insured Scheme and is therefore held by the agent/landlord.</p>
+                                                                    <br/>
+                                                                    <p class="text-center">As you do not wish to make any deductions from the deposit, please ensure that the deposit is released to the tenant(s) immediately.</p> <!--We will advise the tenant(s) to expect repayment from you/the deposit holder, within 5 working days.-->
+                                                                    <br/>
+                                                                    <p class="text-center">If you wish to make deductions, please press ‘Yes’.</p>
+                                                                    <br/>
+                                                                </div>
+                                                        </template>
+
+                                                        
+
+                                                        <template if:true={isAmountReceivedYES}>
+                                                            <div class="col-sm-12 col-md-6 col-lg-8">
+                                                                <div class="form-group row">
+                                                                <label>If you have already attempted negotiations with the tenant(s) and can provide evidence to support this when requested, you can choose to opt out of self-resolution for this case by ticking this box.</label> 
+                                                                <lightning-input class="slds-p-left_xx-large" style="zoom:2.0;" type="checkbox" onchange={handleSkipSelfResolution} checked={isSelfResSkipCheckbox} data-id="checkbox" ></lightning-input>
+                                                                <template if:true={isSkipSelfResolution}> 
+                                                                    
+                                                                    <div class="errorMsgDiv">
+                                                                        <div class="row">
+                                                                            <div class="col-lg-12 col-md-12">
+                                                                                <label>Please tell us about your attempted negotiation attempts with the tenant. This information will be reviewed to ensure it meets the requirements of our scheme rules before we accept this case for Adjudication.<br/><br/>
+    
+                                                                                    You must enter at least 150 characters.</label>    
+                                                                                    
+                                                                           <div class="form-group ">
+                                                                            
+                                                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left" style="padding-left: 1%;">
+                                                                            <!--<lightning-icon icon-name="utility:edit" class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"  size="medium"></lightning-icon>-->
+                                                                            <lightning-textarea
+                                                                            name="myTextArea"
+                                                                            value={isSelfResSkipInput}
+                                                                            placeholder="Please enter a minimum of 150 characters and a maximum of 1000 characters to proceed."
+                                                                            onchange={handleSelfResSkipInput}>
+                                                                            </lightning-textarea>
+                                                                            </div>
+                                                                            
+                                                                    
+                                                                            </div>
+                                                                            
+                                                                            <template if:true={showIfTextSizeIsMore}>
+                                                                                <p class="validation-box">You must enter at least 150 characters and can not enter more than 1000 characters.</p>
+                                                                            </template>
+                                                                        </div>
+                                                                            </div>
+                                                                            </div>
+    
+                                                                    </template>
+    
+                                                            </div>
+                                                        </div>
+                                                           
+                                                            <div>
+                                                                <!-- AC 5.2 commited
+                                                                <div class="row">
+                                                                    <div class="col-xs-12 col-md-12 col-lg-11">
+                                                                        <div class="deposit_box_container">
+                                                                            <div class="deposit_box ">
+                                                                                <div>
+                                                                                    <h5 class="text-secondary">Remainder to allocate</h5>
+                                                                                    <h6>&pound;500.00</h6>
+                                                                                </div>
+                                                                                <img src="../../assets/img/group_icon.png" alt="">
+                                                                            </div>
+                                                                            <div class="deposit_box">
+                                                                                <div>
+                                                                                    <h5 class="text-secondary">Total deposit repayment</h5>
+                                                                                    <h6>&pound;350.00</h6>
+                                                                                </div>
+                                                                                <img src="../../assets/img/pound_icon.png" alt="">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div> -->
+                                                                
+                                                                <div class="form-group row">
+                                                                    <div class="col-sm-12 col-lg-11">
+                                                                        <p>Please enter in the fields below, how much of the deposit you agree to be paid to the tenant(s) and how much you want to request using the claim items below.</p>
+                                                                        <p>The amounts you claim should include any amounts already agreed by the tenant(s).</p>
+                                                                        <p>The total of these amounts must match the amount protected with TDS Insured as shown above.</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group row">
+                                                                    <!-- <label class="col-xs-12 col-sm-4 col-lg-3 col-form-label">Amount to tenant(s) This should include any sums you have already returned to the tenant(s)
+                                                                    </label>
+                                                                    <div class="ol-sm-8 col-lg-6 ">
+                                                                        <lightning-input type="number" label="" value={depositAmountReceived} onchange={handleDepositAmountReceivedChange} placeholder="£0" formatter="currency" min="0.00" step="0.01" onfocus={removeZero} onblur={restrictNegativeVal}></lightning-input>
+                                                                    </div> -->
+                                                                    <div class="col-sm-12 col-lg-6">
+                                                                        <label for="Vicky" class="col-form-label">Amount to tenant(s)
+                                                                        <p>This should include any sums you have already returned to the tenant(s)</p></label>
+                                                                        <lightning-input type="number" label="" value={depositAmountReceived} onchange={handleDepositAmountReceivedChange} placeholder="£0.00" formatter="currency" min="0.00" step="0.01" onfocus={removeZero} onblur={restrictNegativeVal}></lightning-input>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <div class="ol-sm-12 col-lg-6">
+                                                                        <label for="Vicky" class="col-form-label">Amount claimed for:</label>
+                                                                    </div>
+                                                                </div>
+                                                                <template for:each={claimedItems} for:item="mapKey" for:index="index">
+                                                                    <div class="form-group row" key={mapKey.key}>
+                                                                        <!-- <label class="col-sm-3"></label>
+                                                                        <div class="col-sm-7">
+                                                                            <lightning-input type="number" label={mapKey.key}
+                                                                            title={index} value={mapKey.value} onchange={handleCalculateClaimAmount}
+                                                                            formatter="currency"
+                                                                            min="0.00" step="0.01"
+                                                                        onfocus={removeZero} onblur={restrictNegativeVal}></lightning-input>
+                                                                        </div> -->
+                                                                        <div class="col-sm-12 col-lg-6">
+                                                                            <label for="Vicky" class="col-form-label">{mapKey.key}</label>
+                                                                            <lightning-input type="number"
+                                                                                title={index} value={mapKey.value} onchange={handleCalculateClaimAmount}
+                                                                                formatter="currency" min="0.00" step="0.01"
+                                                                                placeholder="£0.00"
+                                                                            onfocus={removeZero} onblur={restrictNegativeVal}>
+                                                                            </lightning-input>
+                                                                        </div>
+                                                                    </div>
+                                                                </template> 
+
+                                                                <div class="form-group row">
+                                                                    <!-- <label class="col-sm-3"></label>
+                                                                    <div class="col-sm-7">
+                                                                        <template if:true={isOtherClaimEntered}>
+                                                                            <label>Other name</label>
+                                                                            <input type="text" class="form-control" value={otherName} onchange={handleOtherName}>
+                                                                            <template if:true={otherNameRequired}>
+                                                                                <p class="validation-box">You must provide an explanation for the ‘Other’ amount.</p>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div> -->
+                                                                    <div class="col-sm-12 col-lg-6">
+                                                                        <template if:true={isOtherClaimEntered}>
+                                                                            <label class="col-form-label">Other text</label>
+                                                                            <lightning-input 
+                                                                                type="text" value={otherName} onchange={handleOtherName} > <!--max-length="300"-->
+                                                                            </lightning-input>
+                                                                            <template if:true={isOtherNameRequired}>
+                                                                                <p class="validation-box">You must provide an explanation for the ‘Other’ amount.</p>
+                                                                            </template>
+                                                                            <template if:true={isOtherNameLimitExceed}>
+                                                                                <p class="validation-box">You are unable to enter more than 300 characters in this field.</p>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- 
+                                                                <div class="form-group row">
+                                                                    <div class="col-sm-8 col-lg-6 offset-lg-3 offset-sm-4">
+                                                                        <lightning-input type="number" label="Damage to property or contents" placeholder="£0" formatter="currency" min="0.00" step="0.01" onfocus={removeZero} onblur={restrictNegativeVal}></lightning-input>
+                                                                    </div>
+                                                                </div>
+                                                                    <div class="form-group row">
+                                                                    <label for="Redecoration" class="col-sm-4 offset-lg-3 offset-sm-4 col-form-label">Redecoration</label>
+                                                                    <div class="col-sm-8 col-lg-6 offset-lg-3 offset-sm-4">
+                                                                        <input type="text" name="" class="form-control" id="Redecoration" placeholder="&#163;">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="Rent" class="col-sm-4 offset-lg-3 offset-sm-4 col-form-label">Rent arreas</label>
+                                                                    <div class="col-sm-8 col-lg-6 offset-lg-3 offset-sm-4">
+                                                                        <input type="text" name="" class="form-control" id="Rent" placeholder="&#163;">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="Other" class="col-sm-4 offset-lg-3 offset-sm-4 col-form-label">Other</label>
+                                                                    <div class="col-sm-8 col-lg-6 offset-lg-3 offset-sm-4">
+                                                                        <input type="text" name="" class="form-control" id="Other" placeholder="&#163;">
+                                                                    </div>
+                                                                </div> -->
+
+                                                                <div class="form-group row">
+                                                                    <!-- <label class="col-xs-12 col-sm-4 col-lg-3 col-form-label">Amount of deposit to be paid to {caseParticipantDetails.Account__r.Name} Ltd: 
+                                                                    </label>
+                                                                    <div class="ol-sm-8 col-lg-6">
+                                                                        <lightning-input type="number" disabled="true" label="" value={depositAmountClaimed} placeholder="£0" formatter="currency" min="0.00" step="0.01" onfocus={removeZero} onblur={restrictNegativeVal}></lightning-input>
+                                                                    </div> -->
+                                                                    <div class="col-sm-12 col-lg-6">
+                                                                        <label for="Amount" class="col-form-label col-sm-8">
+                                                                            Amount of deposit to be paid to {caseParticipantDetails.Account__r.Name}: 
+                                                                        </label>
+                                                                        <lightning-input type="number" disabled="true" label="" value={depositAmountClaimed} placeholder="£0.00" formatter="currency" min="0.00" step="0.01" onfocus={removeZero} onblur={restrictNegativeVal}></lightning-input>
+                                                                    </div>
+                                                                    <template if:true={showIfClaimedMoreAmount}>
+                                                                        <p class="validation-box">The ‘Amount to tenant(s)’ and ‘Amount to be paid to {caseParticipantDetails.Account__r.Name}’ must match the total deposit protected by TDS Insured.</p>
+                                                                    </template>
+                                                                </div>
+
+                                                                <div class="form-group row">
+                                                                    <div class="col-sm-12 col-lg-9 text-right">
+                                                                        <button class="see-all bg-color-blue" onclick={handleClaimContinue}>Continue</button> <!--type="submit" -->
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </template>
+                                                    </form>
+                                                </template>
+                                            </div>
+                                        
+                                    </section>
+                                    <!-- Deposit Steps HTML End -->
+                                </template>
+                            </div>
+                            
+                            <template if:true={isDepositSummaryReview}>
+                                <!-- <c-e-i_-e-w-i_-proposal-summary-review casedetails={caseDetails} ></c-e-i_-e-w-i_-proposal-summary-review> -->
+                                <div class="col-md-12">
+                                    <h5 class="deposit-text">Deposit allocation proposal</h5>
+                                    <a class="go-back" onclick={handleSummaryReviewGoBack}><img src={ew_arrow_dropleft} alt="Back"> Go back</a>
+                                    <div class="property-detail-table">
+                                        <div class="property-detail-row">
+                                            <div class="row">
+                                                <div class="col-sm-4">Tenancy end date</div>
+                                                <div class="col-sm-8">{formattedEndDate}</div>
+                                            </div>
+                                        </div>
+                                        <div class="property-detail-row">
+                                            <div class="row">
+                                                <div class="col-sm-4">Deposit amount</div>
+                                                <div class="col-sm-8"><lightning-formatted-number value={depositAmount} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                            </div>
+                                        </div>
+                                        <div class="property-detail-row">
+                                            <div class="row">
+                                                <div class="col-sm-4">Amount to tenant(s)</div>
+                                                <div class="col-sm-8"><lightning-formatted-number value={depositAmountReceived} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                            </div>
+                                        </div>
+                                        <div class="property-detail-row">
+                                            <div class="row">
+                                                <div class="col-sm-4">Amount to {caseParticipantDetails.Account__r.Name}</div>
+                                                <div class="col-sm-8"><lightning-formatted-number value={depositAmountClaimed} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                            </div>
+                                        </div>
+                                                    
+                                        <template for:each={summaryDisputeItems} for:item="mapKey" for:index="index">
+                                            <div class="property-detail-row no_border1" key={mapKey.key}>
+                                                <div class="row">
+                                                    <div class="col-sm-4 col-lg-3 offset-lg-1">{mapKey.key}</div>
+                                                    <div class="col-sm-8"><lightning-formatted-number value={mapKey.value} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                </div>
+                                            </div>
+                                        </template> 
+                                        <template if:true={isOtherClaimEntered}>
+                                            <div class="property-detail-row no_border1">
+                                                <div class="row">
+                                                    <div class="col-sm-4 col-lg-3 offset-lg-1">Other text</div>
+                                                    <div class="col-sm-8">{otherName}</div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        
+                                        <div class="terms_box">
+                                            <p>By clicking “Submit” you confirm that you wish to submit the deposit allocation proposal as set out above.</p>
+                                            <br/>
+                                            <p>The amount you have claimed cannot be increased after you click “Submit”, although you will be able to negotiate further about the deposit if the other party does not agree to your proposal. </p>
+                                        </div>
+                                        
+                                        <div class="text-right">
+                                            <button class="see-all bg-color-blue submit-btn" style="border: 0 !important" disabled={isDisbaleYESSubmitbtn} onclick={handleSubmitProposal}>Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template if:true={isDepoAllocProposal}>
+                                <div class="col-md-3 info-right-tab">
+                                    <template if:true={isAmountReceivedYES}>
+                                        <p>The deposit has been protected under our Insured scheme and is therefore held by the agent/landlord. </p>
+                                        <p>Make sure the sums you request are reasonable and that you hold evidence to support the amounts claimed.</p>
+                                        <p>Please note, the amount you request cannot be increased after you proceed, although you will be able to negotiate further about the deposit if the other party does not agree to your proposal.</p>
+                                        <p>If your total claim exceeds the tenant’s deposit, you will have the opportunity to add further details if the case proceeds to adjudication. Please remember that TDS will only adjudicate up to the deposit amount and cannot make an award which exceeds the deposit.</p>
+                                    </template>
+                                    <template if:false={isAmountReceivedYES}>
+                                        <p>This deposit has been protected under our Insured scheme and is therefore held by the agent/landlord. </p>
+                                        <p>Make sure the sums you request are reasonable and that you hold evidence to support the amounts claimed.</p>
+                                        <p>Please note, the amount you request cannot be increased after you proceed, although you will be able to negotiate further about the deposit if the other party does not agree to your proposal.</p>
+                                    </template>
+                                    <!-- <p>This deposit has been protected under our Insured scheme and is therefore held by the agent/landlord.</p>
+                                    <p>Please ensure that you have contacted the tenant(s) to propose any deductions and have attempted negotiation.</p>
+                                    <p>When, responding, consider if you requested sum is resonable and whether you hold the relevent evidence to support the amounts claimed.</p>
+                                    <p>Please not, your requested amount can not be increased after your proceed, although you will be able to negotiate further about the deposit if the other party does not agree to your request.</p> -->
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- <template if:true={isShowThankyouPage}>
+                <div class="thank_you">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img src={circle_checked_icon} alt="" />
+                                <h2>Thank You!</h2>
+                                <p> We have now received your deposit allocation proposal. <br><br> 
+                                    TDS will review your proposal and contact you directly if we require any further information from you. We will contact you again by email when we have asked the tenant(s) to respond to your proposal.
+                                </p>
+                                <div class="text-right">
+                                    <a class="see-all bg-color-blue" onclick={handleDepositSummaryReview}>Go to deposit summary</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template> -->
+        </div>
+        
+    </div>
+    <!-- Tabs HTML End -->  
+</template>
+</template>

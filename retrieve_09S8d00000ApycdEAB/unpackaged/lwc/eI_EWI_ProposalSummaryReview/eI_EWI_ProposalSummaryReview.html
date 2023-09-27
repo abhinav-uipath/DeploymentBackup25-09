@@ -1,0 +1,241 @@
+<template>
+    <div class="tab-content custom-tab-content" id="sf-tabContent">
+            
+        <div class="tab-pane fade show active" id="sf-deposit" role="tabpanel" aria-labelledby="sf-deposit-tab">
+            <template if:false={isShowThankyouPage}>
+                <div class="deposit-agent">
+                    <div class="container">
+                        <div class="row">
+                            <template if:true={isProposalSubmittedAGLL}>
+                                <!-- section for proposal submitted - agll start -->
+                                <div class="col-md-12">
+                                    <h5 class="deposit-text">Deposit allocation proposal</h5>
+
+                                    <a class="go-back" onclick={handleGoBack}><img src={ew_arrow_dropleft} alt="Back"> Go back</a>
+                                        <div class="property-detail-table">
+                                            <div class="property-detail-row">
+                                                <div class="row">
+                                                    <div class="col-sm-4">Tenancy end date</div>
+                                                    <template if:true={depositEndDate}>
+                                                        <div class="col-sm-8"> {depositEndDate} </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div class="property-detail-row">
+                                                <div class="row">
+                                                    <div class="col-sm-4">Deposit amount</div>
+                                                    <template if:true={depositAmount}>
+                                                        <div class="col-sm-8"><lightning-formatted-number value={depositAmount} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div class="property-detail-row">
+                                                <div class="row">
+                                                    <div class="col-sm-4">Amount to tenant(s)</div>
+                                                    <template if:true={initialAmountToTenant}>
+                                                        <div class="col-sm-8"><lightning-formatted-number value={initialAmountToTenant} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div class="property-detail-row no_border1">
+                                                <div class="row">
+                                                    <div class="col-sm-4">Amount to &nbsp;
+                                                        <template if:true={agllName}> 
+                                                            {agllName} 
+                                                        </template> 
+                                                    </div>
+                                                    <template if:true={initialAmountToAGLL}>
+                                                        <div class="col-sm-8"><lightning-formatted-number value={initialAmountToAGLL} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                                        
+                                            <template for:each={disputeItems} for:item="mapKey" for:index="index">
+                                                <div class="property-detail-row no_border1" key={mapKey.Id}>
+                                                    <div class="row">
+                                                        <div class="col-sm-4 col-lg-3 offset-lg-1">{mapKey.Type__c}</div>
+                                                        <div class="col-sm-8"><lightning-formatted-number value={mapKey.Claimed_by_Landlord__c} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template if:true={otherDisputeReason}>
+                                                <div class="property-detail-row no_border1">
+                                                    <div class="row">
+                                                        <div class="col-sm-4 col-lg-3 offset-lg-1">Other text</div>
+                                                        <div class="col-sm-8">{otherDisputeReason}</div>
+                                                    </div>
+                                                </div>
+                                            </template> 
+                                            <br/><br/>
+                                            <div class="text-right">
+                                                <button class="see-all bg-color-blue" onclick={handleGoBack}>Go to deposit summary</button>
+                                            </div>
+                                        </div>
+                                </div>
+                                <!-- section for proposal submitted - agll end -->
+                            </template>
+
+                            <template if:true={isAwaitingTenantResponse}>
+                                <!-- section for Proposal submitted – awaiting tenant response start -->
+                                <div class="col-md-12">
+                                <div class="row mt-25">
+                                <div class="col-md-9">
+                                    <h5 class="deposit-text">Deposit allocation proposal</h5>
+
+                                    <a class="go-back" onclick={handleGoBack}><img src={ew_arrow_dropleft} alt="Back"> Go back</a>
+                                        
+                                    <div class="property-detail-table">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3">
+                                                <template if:true={isProposalSubmittedAGLL}><b>Amount claimed for:</b></template>
+                                            </label>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-5">
+                                                <template if:true={isAwaitingTenantResponse}><b>Agent/landlord’s proposal</b></template>
+                                            </label>
+                                        </div>
+                                        <div class="property-detail-row">
+                                            <div class="row">
+                                                <div class="col-sm-4">Tenancy end date</div>
+                                                <template if:true={depositEndDate}>
+                                                    <div class="col-sm-8"> {depositEndDate} </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="property-detail-row">
+                                            <div class="row">
+                                                <div class="col-sm-4">Deposit amount</div>
+                                                <template if:true={depositAmount}>
+                                                    <div class="col-sm-8"><lightning-formatted-number value={depositAmount} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="property-detail-row">
+                                            <div class="row">
+                                                <div class="col-sm-4">Amount to tenant(s)</div>
+                                                <template if:true={initialAmountToTenant}>
+                                                    <div class="col-sm-8"><lightning-formatted-number value={initialAmountToTenant} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="property-detail-row no_border1">
+                                            <div class="row">
+                                                <div class="col-sm-4">Repayment to agent/landlord</div>
+                                                <template if:true={initialAmountToAGLL}>
+                                                    <div class="col-sm-8"><lightning-formatted-number value={initialAmountToAGLL}  format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                                    
+                                        <template for:each={disputeItems} for:item="mapKey" for:index="index">
+                                            <div class="property-detail-row no_border1" key={mapKey.Id}>
+                                                <div class="row">
+                                                    <div class="col-sm-4 col-lg-3 offset-lg-1">{mapKey.Type__c}</div>
+                                                    <div class="col-sm-8"><lightning-formatted-number value={mapKey.Claimed_by_Landlord__c} format-style="currency" minimum-fraction-digits="2" maximum-fraction-digits="2"></lightning-formatted-number></div>
+                                                </div>
+                                            </div>
+                                        </template> 
+
+                                        <template if:true={otherDisputeReason}>
+                                            <div class="property-detail-row no_border1">
+                                                <div class="row">
+                                                    <div class="col-sm-4 col-lg-3 offset-lg-1">Other text</div>
+                                                    <div class="col-sm-8">{otherDisputeReason}</div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <br/><br/>
+                                    </div>
+                                    <template if:true={isShowResponseOptions_AwaitingTenantResponse}>
+                                        <div class="deposit_amount_detail">
+                                            <!-- <form> -->
+                                            <div class="form-group row">
+                                                <label class="col-sm-3"><b>Response to proposal</b></label>
+                                                <div class="col-sm-7">
+                                                    <label>Please select one of the following options:</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label  class="col-sm-3"></label>
+                                                <div class="col-sm-7">
+                                                    <button class="learn-more agree-btn agreebutton disablebutton" disabled={isAgreedButtonDisabled} onclick={handleAgreeToAGLLRequest}>I agree with the agent/landlord's proposal</button>
+                                                    <!-- <a class="learn-more agree-btn" onclick={handleAgreeToAGLLRequest}>I agree with the agent/landlord’s proposal</a> -->
+                                                    <button class="learn-more agree-btn selfresbutton disablebutton" disabled={isSelfresButtonDisabled} onclick={handleNotAgreeButWishToScheme}>I do not agree with the proposal and wish the scheme to resolve any dispute about the deposit</button>
+                                                    <!-- <a class="learn-more agree-btn disabled" onclick={handleNotAgreeButWishToScheme}>I do not agree with the proposal and wish the scheme to resolve any dispute about the deposit</a> -->
+                                                    <button class="learn-more agree-btn courtcasebutton disablebutton" disabled={isCourtCaseButtonDisabled} onclick={handleNotAgreeAndSchemeBoth}>I do not agree with the proposal and do not agree to the scheme resolving any dispute</button>
+                                                    <!-- <a class="learn-more agree-btn disabled" onclick={handleNotAgreeAndSchemeBoth}>I do not agree with the proposal and do not agree to the scheme resolving any dispute</a> -->
+                                                    
+                                                    <template if:true={isNotAgreeButWishToScheme}>
+                                                        <p class="borderbox-with-radius">By clicking ‘Continue’, you consent to TDS Insured making available details of your proposal and any supporting documents to the other parties to the tenancy, the appointed adjudicator if necessary, and to anyone else involved in resolving a dispute about the deposit.</p>
+                                                    </template>
+                                                    <template if:true={isNotAgreeAndSchemeBoth}>
+                                                        <p class="borderbox-with-radius">By clicking ‘Submit’, you agree that you do not consent to TDS Insured resolving any dispute about the deposit. 
+                                                            <br><br>
+                                                            Please note that should you withdraw consent, the onus will be on you to refer the matter to Court and to send TDS Insured evidence that you have done so. In cases where we hold the disputed deposit, if we do not receive evidence that court proceedings have been issued within 6 months from the date of your withdrawal confirmation, then we may, at our discretion, pay any deposit we hold to the landlord.
+                                                        </p>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label  class="col-sm-3"></label>
+                                                <div class="col-sm-7">
+                                                    <template if:true={isAgreeToAGLLRequest}>
+                                                        <button class="learn-more mr-3 bg-color-blue float-right submit-btn-agree" disabled={isSubmitBtnDisable} onclick={handleSubmitAgreetoAGLLRequest}>Submit</button>
+                                                    </template>
+                                                    <template if:true={isNotAgreeButWishToScheme}>
+                                                        <button class="learn-more mr-3 bg-color-blue float-right continue-btn" disabled={isSubmitBtnDisable} onclick={handleContinueNotAgreeButWishToScheme}>Continue</button>
+                                                    </template>
+                                                    <template if:true={isNotAgreeAndSchemeBoth}>
+                                                        <button class="learn-more mr-3 bg-color-blue float-right submit-btn-notagree" disabled={isSubmitBtnDisable} onclick={handleSubmitNotAgreeAndSchemeBoth}>Submit</button>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <!-- </form> -->
+                                        </div>
+                                    </template>
+                                </div>
+                                
+                                <div class="col-md-3 info-right-tab">
+                                    <p>If you agree with what the agent/landlord has proposed, please select 'I agree with the agent/landlord's proposal'. We will then instruct the agent/landlord to make payment to you within 5 working days.</p> 
+                                    <p>If you do not agree with what the agent/landlord has proposed, please select the second option 'I do not agree with the proposal and wish the scheme to resolve any dispute about the deposit' where you can make a counter proposal.</p>
+                                    <p>If you select the third option 'I do not agree with the proposal and do not agree to the scheme resolving any dispute', we will notify both parties about what should happen next.</a></p> 
+                                </div>
+                                </div>
+                                </div>
+                                <!-- section for Proposal submitted – awaiting tenant response end -->
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={isShowThankyouPage}>
+                <div class="thank_you">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 thankyou-page">
+                                <img src={circle_checked_icon} alt="" />
+                                <h2>Thank You!</h2>
+                                <template if:true={isAgreeToAGLLRequest}>
+                                    <p>Thank you for confirming you agree with the agent/landlord’s deposit allocation proposal. We will advise the agent/landlord of your agreement and instruct the payment as agreed.</p>
+                                </template>
+                                <template if:true={isNotAgreeAndSchemeBoth}>
+                                    <p>You have confirmed that you do not wish to engage in early resolution and do not agree to TDS resolving this dispute.</p>
+                                    <br/>
+                                    <p>Please note that once you withdraw consent, the onus will be on you to refer the matter to Court within 6 months of your confirmation. You should then send TDS Insured evidence that you have done so.</p>
+                                    <br/>
+                                    <p>In cases where we hold the disputed deposit, if we do not receive evidence that court proceedings have been issued within 6 months from the date of your withdrawal confirmation, then we may, at our discretion, pay any deposit we hold to the other party.</p>
+                                </template>
+                                <div class="text-right">
+                                    <a class="see-all bg-color-blue" onclick={handleGotoDepositSummary}>Go to deposit summary</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>
